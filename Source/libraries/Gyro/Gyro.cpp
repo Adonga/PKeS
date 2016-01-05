@@ -4,29 +4,24 @@ MyGyro::MyGyro()
   {
   }
   
-  void MyGyro::Update()
+ void MyGyro::Update()
   {
     gyroLast = gyroNow;
     gyroNow = MPU9150_readSensor(MPU9150_GYRO_ZOUT_L,MPU9150_GYRO_ZOUT_H);
     lastTime = nowTime;
     nowTime = millis();
 
-   long lastChange = gyroChanged;
    long tmp =  ( gyroNow - gyroAverage );
    tmp = tmp/100;   
    if( gyroAverage +5 < gyroNow || gyroNow < gyroAverage -5  )
     {
       gyroChanged += tmp;
     }
-    
+   
     elapsedTime = nowTime - lastTime;     
-    if(lastChange == gyroChanged )
-    {
-      gyroChanged =  gyroChanged ;
-    }
   }
 
-  
+ 
   long MyGyro::getUsefulNumber()
   {
     const int magicNumber = 8; //why?
@@ -35,7 +30,10 @@ MyGyro::MyGyro()
    
     return tmp/tmp2 ;
   }
-  private:
+
+  void MyGyro::resetValue()
+  {
+    gyroChanged=0;
+  }
   
-}
 

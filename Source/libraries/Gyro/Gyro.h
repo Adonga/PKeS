@@ -24,6 +24,8 @@ MyGyro();
   
   long getUsefulNumber();
 
+  void resetValue();
+
   private:
   
 };

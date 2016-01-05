@@ -3,15 +3,16 @@
 #include "Display.h"
 #include "Gyro.h"
 #include "Motor.h"
-#include "Waterscale.h"
-#include "IRC.h"
-#include "ADConverter.h"
 
 Display dis;
 MyGyro mygyro;
 Motor motor;
 Waterscale scale;
-ADConverter adc;
+
+int s1[10]={272,217,179,153,138,130,125,118,111,110};
+IRC irc1(s1);
+int s2[10]={506,400,334,284,253,226,205,185,170,158};
+IRC irc2(s2);
 
 void setup() 
 {
