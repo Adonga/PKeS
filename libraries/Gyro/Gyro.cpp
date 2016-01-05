@@ -1,20 +1,10 @@
-class MyGyro 
-{
-  public:
-  MyGyro()
+#include "Gyro.h"
+  
+MyGyro::MyGyro()
   {
   }
   
-  long gyroAverage;
-  static const int lange = 25;
-  long gyroLast = 0;
-  long gyroNow = 0;
-  long gyroChanged = 0;
-  long lastTime = 0;
-  long nowTime = 0;
-  long elapsedTime = 0;  
-
-  void Update()
+  void MyGyro::Update()
   {
     gyroLast = gyroNow;
     gyroNow = MPU9150_readSensor(MPU9150_GYRO_ZOUT_L,MPU9150_GYRO_ZOUT_H);
@@ -37,7 +27,7 @@ class MyGyro
   }
 
   
-  long getUsefulNumber()
+  long MyGyro::getUsefulNumber()
   {
     const int magicNumber = 8; //why?
     int tmp = gyroChanged * magicNumber; //
@@ -45,7 +35,5 @@ class MyGyro
    
     return tmp/tmp2 ;
   }
-  private:
   
-};
 

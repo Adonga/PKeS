@@ -1,26 +1,12 @@
-#include <Wire.h>
-#include <imu.h>
+#include "Display.h"
 
 
-enum DisplayDotMode{
-  None,One,Two
-};
-
-
-class Display
-{
-
-public:
-
-    unsigned char d1,d2,d3;
-
-    DisplayDotMode dot=None;
-    Display()
+    Display::Display()
     {
       DDRC|=(28);
     }
 
-    unsigned char toBin(int a)
+    unsigned char Display::toBin(int a)
     {
       switch(a)
       {
@@ -39,9 +25,9 @@ public:
       }
     }
 
-    void SetDotMode(DisplayDotMode a){dot=a;}
+    void Display::	SetDotMode(DisplayDotMode a){dot=a;}
 
-    void ShowCleared()
+    void Display::ShowCleared()
     {
       unsigned char b1,b2,b3;
       b1=d1;
@@ -60,7 +46,7 @@ public:
       d3=b3;      
     }
     
-    void Show()
+    void Display::Show()
     {
       switch(dot){
         case None:break;
@@ -164,7 +150,7 @@ public:
     }
 
 
-    int showSmallNumber(int n,DisplayDotMode bla=None)
+    int Display::showSmallNumber(int n,DisplayDotMode bla)
     {
       dot=bla;
         int error=0;
@@ -190,6 +176,4 @@ public:
 
         return error;  
     }
-
-};
 
