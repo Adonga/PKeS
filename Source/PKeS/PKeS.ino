@@ -26,7 +26,7 @@ void setup()
 
   
   _delay_ms(100);
-  Serial.println("123456789");
+  Serial.println("0123456789");
   dis.ShowCleared();
 
   Wire.begin();
