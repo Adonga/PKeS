@@ -47,9 +47,9 @@ Motor::Motor()
 
   }
 
- int Motor::Update()
+ int Motor::Update(int t1, int t2, MyGyro *mygyro)
   {
-    int t1,t2,t3,t4;
+    int t3,t4;
     switch(cMode){
 
       case Wait:
@@ -68,23 +68,21 @@ Motor::Motor()
             timewait=50;
           }
           g++;
-          t1=irc2.cValue;
-          t2=irc1.cValue;
 
           if(t1>120){
              if(t2>100){
               dir=Forward;
               ChangeSpeed(Slow);
              }else{
-               if((h++)%3)mygyro.gyroChanged=80*12;
-               else mygyro.gyroChanged=-100*12;
+               if((h++)%3)mygyro->gyroChanged=80*12;
+               else mygyro->gyroChanged=-100*12;
               cMode=Rotate;
              }
              
           }else{
             if(t2>120){
-              if((h++)%3)mygyro.gyroChanged=100*12;
-              else mygyro.gyroChanged=-80*12;cMode=Rotate;
+              if((h++)%3)mygyro->gyroChanged=100*12;
+              else mygyro->gyroChanged=-80*12;cMode=Rotate;
               cMode=Rotate;
             }else{
               dir=Backward;
@@ -97,7 +95,7 @@ Motor::Motor()
           break;
 
       case Rotate:
-          t1=mygyro.getUsefulNumber();
+          t1=mygyro->getUsefulNumber();
 
           if(!t1){
             dir=Stay;

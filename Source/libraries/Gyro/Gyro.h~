@@ -2,7 +2,7 @@
 #define GYRO_H
 #include <Wire.h>
 #include <imu.h>
-#include <Arduino.h>
+#include <avr.h>
 
 class MyGyro 
 {
@@ -24,7 +24,7 @@ MyGyro();
   
   long getUsefulNumber();
 
-  void reset();
+  void resetValue();
 
   private:
   

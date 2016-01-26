@@ -1,4 +1,6 @@
 #include "IRC.h"
+
+
   IRC::IRC(int samples[])
   {
     
@@ -8,7 +10,7 @@
         b[2*i +1]=(25*i)+75;  
     }
     
-  }
+  };
 
   void IRC::addvalue(int vr)
   {
@@ -49,9 +51,9 @@
     cValue=k;
   }
 
-  void IRC::showConverted()
+  void IRC::showConverted(Display *dis)
   {
     
-    dis.showSmallNumber(cValue,One);
+    dis->showSmallNumber(cValue,One);
   }
   

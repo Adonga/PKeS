@@ -1,7 +1,13 @@
+#ifndef WATERSCALE_H
+#define WATERSCALE_H
+#include <imu.h>
+#include <Wire.h>
+#include <Arduino.h>
+
 class Waterscale
 {
   public:
-  Waterscale( ){}
+  Waterscale( );
 
   int accelX;
   int accelY;
@@ -20,4 +26,4 @@ class Waterscale
   void putNumbertoDisplay(unsigned char charNumber [3]);
 
 };
-
+#endif

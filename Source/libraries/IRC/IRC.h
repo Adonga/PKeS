@@ -1,3 +1,7 @@
+#ifndef IRC_H
+#define IRC_H
+#include "Display.h"
+
 class IRC
 {
   public:
@@ -15,7 +19,7 @@ class IRC
 
   void addvalue(int vr);
 
-  void showConverted();
+  void showConverted(Display *dis);
   
 };
-
+#endif

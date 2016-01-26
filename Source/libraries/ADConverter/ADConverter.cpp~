@@ -1,8 +1,6 @@
 #include "ADConverter.h"
 
-  public:
-
-  ADConverter()
+  ADConverter::ADConverter()
   {
     PRR0&=~(1);  
     
@@ -34,7 +32,7 @@
     int b=ADCL|(ADCH<<8);
 }
   
-  int convert(char port=0)
+  int ADConverter::convert(char port)
   {
     ADMUX&=~(63);
     port&=(63);

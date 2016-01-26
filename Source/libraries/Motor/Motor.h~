@@ -16,6 +16,8 @@ enum MoveMode{
 class Motor
 {
 public:
+
+
   Direction dir=Stay;
   SpeedMode currentSpeed=Zero;
   MoveMode cMode=Drive;
@@ -28,7 +30,7 @@ public:
   long timewait=0;
   char h=0;
   char g=0;
-  int Update();
+  int Update(int t1, int t2, MyGyro *mygyro);
 
   void bla();
 

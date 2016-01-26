@@ -1,6 +1,7 @@
 #ifndef MOTOR_H
 #define MOTOR_H
 #include <Arduino.h>
+#include "Gyro.h"
 enum Direction{
   Stay,Forward,Backward,Right,Left
 };
@@ -17,10 +18,6 @@ class Motor
 {
 public:
 
-int s1[10]={272,217,179,153,138,130,125,118,111,110};
-IRC irc1(s1);
-int s2[10]={506,400,334,284,253,226,205,185,170,158};
-IRC irc2(s2);
 
   Direction dir=Stay;
   SpeedMode currentSpeed=Zero;
@@ -34,7 +31,7 @@ IRC irc2(s2);
   long timewait=0;
   char h=0;
   char g=0;
-  int Update();
+  int Update(int t1, int t2, MyGyro *mygyro);
 
   void bla();
 

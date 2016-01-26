@@ -13,6 +13,12 @@ Motor motor;
 Waterscale scale;
 ADConverter adc;
 
+int s1[10]={272,217,179,153,138,130,125,118,111,110};
+IRC irc1(s1);
+int s2[10]={506,400,334,284,253,226,205,185,170,158};
+IRC irc2(s2);
+
+
 void setup() 
 {
   // put your setup code here, to run once:
@@ -61,22 +67,25 @@ void loop()
   mygyro.Update();
   int h;
 
+  int t1 = irc2.cValue;
+  int t2 = irc1.cValue;
+
   switch(t){
     case 0:
           dis.ShowCleared();
           break;
     case 1:
-          irc1.showConverted();
+          irc1.showConverted(&dis);
           break;
     case 2:
-          irc2.showConverted();
+          irc2.showConverted(&dis);
           break;
     case 3:
           h=mygyro.getUsefulNumber();
           dis.showSmallNumber(h);
           break;
     case 4:
-          h=motor.Update();
+          h=motor.Update(t1,t2, &mygyro);
           if(h)motor.ChangeMode(Drive);
           break;
 
@@ -86,7 +95,7 @@ void loop()
           break;
     case 6:
           motor.cMode=Rotate;
-          h=motor.Update();
+          h=motor.Update(t1,t2, &mygyro);
           dis.showSmallNumber(mygyro.getUsefulNumber());
           if(h)t=5;
           break;
