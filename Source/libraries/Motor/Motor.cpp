@@ -47,53 +47,103 @@ Motor::Motor()
 
   }
 
- int Motor::Update(int t1, int t2, MyGyro *mygyro)
+ int Motor::Update(IRC *irc1, IRC *irc2, MyGyro *mygyro)
   {
-    int t3,t4;
+    int t1,t2,t3,t4;
     switch(cMode){
 
       case Wait:
             Stop();
             if(millis()-oldtime>=timewait){
               cMode=Drive;
-              g=0;
+              g=1;
             }
-
             break;
       
       case Drive:
+      /*
           if(!g){
-            cMode=Wait;
+            cMode=Drive;
             oldtime=millis();
             timewait=50;
+            break;
           }
-          g++;
+          g=1;
+          */
+          t1=irc1->cValue;
+          t2=irc2->cValue;
+          t3=irc1->lValue;
+          t4=irc2->lValue;
+          if(t1>230){
 
-          if(t1>120){
-             if(t2>100){
+              h=(h+1)%2;
+             
               dir=Forward;
-              ChangeSpeed(Slow);
-             }else{
-               if((h++)%3)mygyro->gyroChanged=80*12;
-               else mygyro->gyroChanged=-100*12;
-              cMode=Rotate;
-             }
+              ChangeSpeed(VerySlow);
              
           }else{
-            if(t2>120){
-              if((h++)%3)mygyro->gyroChanged=100*12;
-              else mygyro->gyroChanged=-80*12;cMode=Rotate;
-              cMode=Rotate;
-            }else{
-              dir=Backward;
-              ChangeSpeed(VerySlow); 
+
+            switch(h){
+              case 0:
+                  //dir=Right;
+                  mygyro->gyroChanged=90*12;
+                  break;
+
+              case 1:
+                  //dir=Left;
+                  mygyro->gyroChanged=-90*12;
+                  break;
+                  
             }
+            cMode=Rotate;
+            break;
+          }
+
+          if(t2>230){
+
+              h=(h+1)%2;
+             
+              dir=Forward;
+              ChangeSpeed(VerySlow);
+             
+          }else{
+
+            switch(h){
+              case 0:
+                  //dir=Right;
+                  mygyro->gyroChanged=90*12;
+                  break;
+
+              case 1:
+                  //dir=Left;
+                  mygyro->gyroChanged=-90*12;
+                  break;
+                  
+            }
+            cMode=Rotate;
             
           }
 
 
           break;
 
+      case DriveBy:
+            t1=irc1->cValue;
+            t2=irc2->cValue;
+            ChangeSpeed(VerySlow);  
+
+
+            
+            if(t1>150&&t2>150){
+             g=0;
+             dir=Stay;
+             cMode=Drive;
+            }
+
+
+
+            break;
+      
       case Rotate:
           t1=mygyro->getUsefulNumber();
 
@@ -105,23 +155,24 @@ Motor::Motor()
             break;
           }else if(t1<0){
             dir=Right;
-            if(t1<-10){
-              if(t1<-40){
-                ChangeSpeed(Middle);
+            t1=-t1;
+            if(t1<40){
+              if(t1<10){
+                ChangeSpeed(VeryVerySlow);
                 break;
               }
-              ChangeSpeed(Slow);
+              ChangeSpeed(VerySlow);
             }else{
               ChangeSpeed(VerySlow);
             }
           }else if(t1>0){
             dir=Left;
-             if(t1>10){
-              if(t1>40){
-                ChangeSpeed(Middle);
+             if(t1<40){
+              if(t1<10){
+                ChangeSpeed(VeryVerySlow);
                 break;
               }
-              ChangeSpeed(Slow);
+              ChangeSpeed(VerySlow);
              }else{
               ChangeSpeed(VerySlow);
              }
@@ -129,7 +180,7 @@ Motor::Motor()
 
           break;
     }
-
+    
     return 0;
   }
 

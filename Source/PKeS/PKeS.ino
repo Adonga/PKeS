@@ -52,7 +52,9 @@ void setup()
 }
 
 
-
+static byte km=0;
+static int rot=0;
+static bool otherin=false;
 char t=0;
 void loop() 
 {
@@ -73,6 +75,7 @@ void loop()
   switch(t){
     case 0:
           dis.ShowCleared();
+          motor.Stop();
           break;
     case 1:
           irc1.showConverted(&dis);
@@ -85,32 +88,35 @@ void loop()
           dis.showSmallNumber(h);
           break;
     case 4:
-          h=motor.Update(t1,t2, &mygyro);
+          h=motor.Update(&irc1,&irc2, &mygyro);
           if(h)motor.ChangeMode(Drive);
           break;
 
     case 5:
-          motor.Stop();
-          t=0;
+          motor.cMode=Rotate;
+          h=motor.Update(&irc1,&irc2,&mygyro);
+          dis.showSmallNumber(mygyro.getUsefulNumber());
           break;
     case 6:
-          motor.cMode=Rotate;
-          h=motor.Update(t1,t2, &mygyro);
-          dis.showSmallNumber(mygyro.getUsefulNumber());
-          if(h)t=5;
+          OCR1A  = km;
+          OCR1B  = 0;
+          OCR4A  = km;
+          OCR4B  = 0;  
+          Serial.println(km);
           break;
     case 7:
-          motor.dir=Forward;
-          motor.ChangeSpeed(Fast);  
+          motor.dir=Backward;
+          motor.ChangeSpeed(Middle);  
+          
           break;
 
     case 8:
-          mygyro.resetValue();
-          t=3;
+          motor.dir=Right;
+          motor.ChangeSpeed(Middle);  
           break;
     case 9:
-          motor.dir=Backward;
-          motor.ChangeSpeed(Fast);
+          motor.dir=Left;
+          motor.ChangeSpeed(Middle);  
           break;
     default:
     t=0;
@@ -122,9 +128,38 @@ void loop()
   _delay_ms(100);
 //*
                 // read the incoming byte:
-                byte incomingByte = Serial.read();
+               byte incomingByte = Serial.read();
                 //Serial.println(incomingByte);
-                switch(incomingByte)
+                static char lo=0;
+                static int vorzeichen=1;
+                if(otherin){
+                  switch(incomingByte){
+                    case '-':vorzeichen*=-1;break;
+                    case '1':rot=(rot*10) +1;break;
+                    case '2':rot=(rot*10) +2;break;
+                    case '3':rot=(rot*10) +3;break;
+                    case '4':rot=(rot*10) +4;break;
+                    case '5':rot=(rot*10) +5;break;
+                    case '6':rot=(rot*10) +6;break;
+                    case '7':rot=(rot*10) +7;break;
+                    case '8':rot=(rot*10) +8;break;
+                    case '9':rot=(rot*10) +9;break;
+                    case '0':rot=(rot*10) ;break;
+                    default:
+                          lo+=1;
+                          if(lo>3){
+                            rot=rot*12;
+                            mygyro.gyroChanged=vorzeichen*rot;
+                            vorzeichen=1;
+                            rot=0;
+                            otherin=false;
+                            t=5;
+                            lo=0;
+                          }
+                          break;
+                  }
+                }else{
+                  switch(incomingByte)
                 {
                   case 's':t=0;break;
                   case '1':t=1;break;
@@ -144,7 +179,11 @@ void loop()
                   case 'f':t=15;break;
                   case 'g':t=16;break;
                   case 'h':t=17;break;
+                  case 'w':km+=1;break;
+                  case 'm':km-=1;break;
+                  case 'r':otherin=true;break;  
                   default: break;
+                }  
                 }
 //*/
   

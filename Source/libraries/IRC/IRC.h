@@ -15,6 +15,8 @@ class IRC
 
   int cValue=0;
   
+  int lValue=0;
+  
   IRC(int samples[]);
 
   void addvalue(int vr);

@@ -15,6 +15,7 @@
   void IRC::addvalue(int vr)
   {
     g[(c++)%s]=vr;
+    lValue=vr;
     if(c>2*s)c-=s;
     v=0;
     
