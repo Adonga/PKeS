@@ -1,0 +1,16 @@
+#ifndef ODOMETRIE_H
+#define ODOMETRIE_H
+#include "avr/interrupt.h"
+class Odometrie
+{
+	public:
+		Odometrie();
+		void init();
+		void test();
+	private:
+
+
+};
+
+
+#endif

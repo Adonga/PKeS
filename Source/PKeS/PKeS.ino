@@ -6,6 +6,7 @@
 #include "Waterscale.h"
 #include "IRC.h"
 #include "ADConverter.h"
+#include "Odometire.h"
 
 Display dis;
 MyGyro mygyro;
@@ -18,17 +19,17 @@ IRC irc1(s1);
 int s2[10]={506,400,334,284,253,226,205,185,170,158};
 IRC irc2(s2);
 
+   Odometrie odo;
 
 void setup() 
 {
   // put your setup code here, to run once:
   Serial.begin(57600);
-
   
   _delay_ms(100);
   Serial.println("0123456789");
   dis.ShowCleared();
-
+  Serial.println("Bla1");
   Wire.begin();
 
     // Clear the 'sleep' bit to start the sensor.
@@ -45,13 +46,25 @@ void setup()
 
     motor.init();
 
+   
+    
+    odo.init();
+    
    Serial.println(TCCR1A);
    Serial.println(TCCR1B);
    Serial.println(TCCR4A);
    Serial.println(TCCR4B);
 }
 
-
+  ISR( INT2_vect )
+  {
+   odo.test();
+  }
+  
+  ISR ( PCINT1_vect )
+  {
+    odo.test2();
+  }
 static byte km=0;
 static int rot=0;
 static bool otherin=false;
@@ -76,6 +89,7 @@ void loop()
     case 0:
           dis.ShowCleared();
           motor.Stop();
+          cli();
           break;
     case 1:
           irc1.showConverted(&dis);
