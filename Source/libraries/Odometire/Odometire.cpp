@@ -6,17 +6,27 @@
 
   void Odometrie::init()
 	{
-		Serial.println("Bla");	
+			cli();
 //		DDRD |= ( 1 << PD2 );
 		PORTD |= (1<< PD2);
-		_delay_ms(1);
-		DDRJ |= (1 << PJ0);
-		PORTJ |= (1 << PJ0);
-		EICRA |= ( 1 << ISC11);
-		EICRA |= ( 1 << ISC10);
-		
+
+		EICRA |= ( 1 << ISC21);
+//	  EICRA |= ( 1 << ISC20);
+		Serial.print("EICRA ");
+		Serial.println(EICRA);
+		EIFR = (1 << INTF2);
 		EIMSK |= ( 1 << INT2);
     sei();
+
+
+
+//		DDRJ |= (1 << PJ0);
+		PORTJ |= (1 << PJ0);
+
+		PCMSK1 |= (1 << PCINT9);
+		PCICR |= (1 << PCIE1);
+
+
   }
 
 	void Odometrie::test()

@@ -19,7 +19,24 @@ IRC irc1(s1);
 int s2[10]={506,400,334,284,253,226,205,185,170,158};
 IRC irc2(s2);
 
+
    Odometrie odo;
+
+
+  ISR( INT2_vect )
+  {
+   odo.test();   
+  }
+  
+  ISR ( PCINT1_vect )
+  {
+    odo.test2();
+  }
+  ISR ( PCINT9_vect )
+  {
+    odo.test2();
+  }
+
 
 void setup() 
 {
@@ -29,7 +46,7 @@ void setup()
   _delay_ms(100);
   Serial.println("0123456789");
   dis.ShowCleared();
-  Serial.println("Bla1");
+  
   Wire.begin();
 
     // Clear the 'sleep' bit to start the sensor.
@@ -46,29 +63,22 @@ void setup()
 
     motor.init();
 
-   
-    
     odo.init();
+    _delay_ms(10);
     
    Serial.println(TCCR1A);
    Serial.println(TCCR1B);
    Serial.println(TCCR4A);
    Serial.println(TCCR4B);
+  
 }
 
-  ISR( INT2_vect )
-  {
-   odo.test();
-  }
-  
-  ISR ( PCINT1_vect )
-  {
-    odo.test2();
-  }
+
 static byte km=0;
 static int rot=0;
 static bool otherin=false;
 char t=0;
+
 void loop() 
 {
   // put your main code here, to run repeatedly:
@@ -89,7 +99,6 @@ void loop()
     case 0:
           dis.ShowCleared();
           motor.Stop();
-          cli();
           break;
     case 1:
           irc1.showConverted(&dis);
@@ -199,30 +208,4 @@ void loop()
                   default: break;
                 }  
                 }
-//*/
-  
-  /*
-  double dT = ( (double) MPU9150_readSensor(MPU9150_TEMP_OUT_L,MPU9150_TEMP_OUT_H) + 12412.0) / 340.0;
-  Serial.print(dT);
-  Serial.print("  ");
-  Serial.print(MPU9150_readSensor(MPU9150_CMPS_XOUT_L,MPU9150_CMPS_XOUT_H));
-  Serial.print("  ");
-  Serial.print(MPU9150_readSensor(MPU9150_CMPS_YOUT_L,MPU9150_CMPS_YOUT_H));
-  Serial.print("  ");
-  Serial.print(MPU9150_readSensor(MPU9150_CMPS_ZOUT_L,MPU9150_CMPS_ZOUT_H));
-  Serial.print("  ");
-  Serial.print(MPU9150_readSensor(MPU9150_GYRO_XOUT_L,MPU9150_GYRO_XOUT_H));
-  Serial.print("  ");
-  Serial.print(MPU9150_readSensor(MPU9150_GYRO_YOUT_L,MPU9150_GYRO_YOUT_H));
-  Serial.print("  ");
-  Serial.print(MPU9150_readSensor(MPU9150_GYRO_ZOUT_L,MPU9150_GYRO_ZOUT_H));
-  Serial.print("  ");
-  Serial.print(MPU9150_readSensor(MPU9150_ACCEL_XOUT_L,MPU9150_ACCEL_XOUT_H));
-  Serial.print("  ");
-  Serial.print(MPU9150_readSensor(MPU9150_ACCEL_YOUT_L,MPU9150_ACCEL_YOUT_H));
-  Serial.print("  ");
-  Serial.print(MPU9150_readSensor(MPU9150_ACCEL_ZOUT_L,MPU9150_ACCEL_ZOUT_H));
-  Serial.println();
-  delay(100);
-  //*/
 }
