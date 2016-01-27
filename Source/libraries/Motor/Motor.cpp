@@ -47,22 +47,25 @@ Motor::Motor()
 
   }
 
- int Motor::Update(IRC *irc1, IRC *irc2, MyGyro *mygyro, int right,int left)
+ int Motor::Update(IRC *irc1, IRC *irc2, MyGyro *mygyro)
   {
-		int tmp = right - left;
-		if( (tmp-1)<0 || (tmp+1)>0 )
+		int tmp = interrupt1 - interrupt2; //int right,int left
+		if( (tmp-1)>0 || (tmp+1)<0 )
 		{
 		if( tmp > 0 ) 
-			{offSetLeft++; }
+			{offSetLeft+=2; }
 		else 
-	 		{offSetLeft--; }
+	 		{offSetLeft-=2; }
 		}
+		interrupt1 = 0;
+		interrupt2 = 0;
     int t1,t2,t3,t4;
     switch(cMode){
 
       case Wait:
             Stop();
-            if(millis()-oldtime>=timewait){
+            if(millis()-oldtime>=timewait)
+						{
               cMode=Drive;
               g=1;
             }

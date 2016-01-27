@@ -22,17 +22,15 @@ IRC irc2(s2);
 
 
    Odometrie odo;
-  volatile int interrupt1;
-  volatile int interrupt2;
 
   ISR( INT2_vect )
   {
-   interrupt1++;
+   motor.interrupt1++;
   }
   
   ISR ( PCINT1_vect )
   {
-    interrupt2++;
+    motor.interrupt2++;
   }
   
 PID pid;
@@ -106,9 +104,9 @@ void loop()
           dis.ShowCleared();
           motor.Stop();
           Serial.print("interrupt1r: ");
-          Serial.print(interrupt1);
+          Serial.print(motor.interrupt1);
           Serial.print("    interrupt2l ");
-          Serial.println(interrupt2);
+          Serial.println(motor.interrupt2);
           break;
     case 1:
           irc1.showConverted(&dis);
@@ -121,13 +119,13 @@ void loop()
           dis.showSmallNumber(h);
           break;
     case 4:
-          h=motor.Update(&irc1,&irc2, &mygyro,interrupt1,interrupt2);
+          h=motor.Update(&irc1,&irc2, &mygyro );
           if(h)motor.ChangeMode(Drive);
           break;
 
     case 5:
           motor.cMode=Rotate;
-          h=motor.Update(&irc1,&irc2,&mygyro,interrupt1,interrupt2);
+          h=motor.Update(&irc1,&irc2,&mygyro );
           dis.showSmallNumber(mygyro.getUsefulNumber());
           break;
     case 6:

@@ -32,8 +32,8 @@
 		/*ds = pi * d * n
 		n ... anzahl Rad umdrehungen
 		d ... druchmesser Rad  ca 5cm */
-		distanceDrivenL = (314 * intr1 * 500)  /18;  
-		distanceDrivenR = (314 * intr2 * 500)  /18;  
+		distanceDrivenL = (314 * intr1 * 500)  /1800;  // should be cm
+		distanceDrivenR = (314 * intr2 * 500)  /1800;  
 		return distanceDrivenL>distanceDrivenR?distanceDrivenL:distanceDrivenR;
 	}
 
