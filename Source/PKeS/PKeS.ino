@@ -7,6 +7,7 @@
 #include "IRC.h"
 #include "ADConverter.h"
 #include "Odometire.h"
+#include "PID.h"
 
 Display dis;
 MyGyro mygyro;
@@ -21,28 +22,32 @@ IRC irc2(s2);
 
 
    Odometrie odo;
-
+  volatile int interrupt1;
+  volatile int interrupt2;
 
   ISR( INT2_vect )
   {
-   odo.test();   
+   interrupt1++;
   }
   
   ISR ( PCINT1_vect )
   {
-    odo.test2();
+    interrupt2++;
   }
-  ISR ( PCINT9_vect )
-  {
-    odo.test2();
-  }
-
+  
+PID pid;
 
 void setup() 
 {
   // put your setup code here, to run once:
   Serial.begin(57600);
-  
+  pid.SetSampleTime(20);
+  pid.setInput(100);
+  pid.SetMode(1);
+  pid.SetOutputLimits(100,200);
+  pid.setpoint(190);
+  pid.SetTunings( 0.5, 0.2, 0.3 );
+ // pid.SetControllerDirection();
   _delay_ms(100);
   Serial.println("0123456789");
   dis.ShowCleared();
@@ -82,7 +87,8 @@ char t=0;
 void loop() 
 {
   // put your main code here, to run repeatedly:
-
+  pid.setInput(pid.Output);
+  pid.Compute();
   
   int b=adc.convert();
   irc1.addvalue(b);
@@ -99,6 +105,10 @@ void loop()
     case 0:
           dis.ShowCleared();
           motor.Stop();
+          Serial.print("interrupt1r: ");
+          Serial.print(interrupt1);
+          Serial.print("    interrupt2l ");
+          Serial.println(interrupt2);
           break;
     case 1:
           irc1.showConverted(&dis);
@@ -111,13 +121,13 @@ void loop()
           dis.showSmallNumber(h);
           break;
     case 4:
-          h=motor.Update(&irc1,&irc2, &mygyro);
+          h=motor.Update(&irc1,&irc2, &mygyro,interrupt1,interrupt2);
           if(h)motor.ChangeMode(Drive);
           break;
 
     case 5:
           motor.cMode=Rotate;
-          h=motor.Update(&irc1,&irc2,&mygyro);
+          h=motor.Update(&irc1,&irc2,&mygyro,interrupt1,interrupt2);
           dis.showSmallNumber(mygyro.getUsefulNumber());
           break;
     case 6:

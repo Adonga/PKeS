@@ -1,13 +1,15 @@
 #ifndef ODOMETRIE_H
 #define ODOMETRIE_H
 #include "avr/interrupt.h"
+	
 class Odometrie
 {
 	public:
+		int distanceDrivenL;
+		int distanceDrivenR;
 		Odometrie();
 		void init();
-		void test();
-		void test2();
+		int distance(int intr1, int intr2);
 	private:
 
 

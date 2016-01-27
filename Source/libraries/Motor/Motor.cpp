@@ -47,8 +47,16 @@ Motor::Motor()
 
   }
 
- int Motor::Update(IRC *irc1, IRC *irc2, MyGyro *mygyro)
+ int Motor::Update(IRC *irc1, IRC *irc2, MyGyro *mygyro, int right,int left)
   {
+		int tmp = right - left;
+		if( (tmp-1)<0 || (tmp+1)>0 )
+		{
+		if( tmp > 0 ) 
+			{offSetLeft++; }
+		else 
+	 		{offSetLeft--; }
+		}
     int t1,t2,t3,t4;
     switch(cMode){
 
@@ -216,41 +224,42 @@ Motor::Motor()
     _delay_us(200);
     PORTH&=~(1<<3);
     dir=now;
-    
+    int cSpeedl = currentSpeed + offSetLeft;
+		int cSpeedr = currentSpeed + offSetRight;
       switch(dir)
       {
       case Stay:
-            OCR1A  = currentSpeed;
-            OCR1B  = currentSpeed;
-            OCR4A  = currentSpeed;
-            OCR4B  = currentSpeed;        
+            OCR1A  = cSpeedl;
+            OCR1B  = cSpeedl;
+            OCR4A  = cSpeedr;
+            OCR4B  = cSpeedr;        
             break;
       case Forward:
-            OCR1A  = currentSpeed;
+            OCR1A  = cSpeedl;
             OCR1B  = 0;
-            OCR4A  = currentSpeed;
+            OCR4A  = cSpeedr;
             OCR4B  = 0;
             break;
             
       case Right:
             OCR1A  = 0;
-            OCR1B  = currentSpeed;
-            OCR4A  = currentSpeed;
+            OCR1B  = cSpeedl;
+            OCR4A  = cSpeedr;
             OCR4B  = 0;
             break;
             
       case Backward:
             OCR1A  = 0;
-            OCR1B  = currentSpeed;
+            OCR1B  = cSpeedl;
             OCR4A  = 0;
-            OCR4B  = currentSpeed;
+            OCR4B  = cSpeedr;
             break;
       
       case Left:
-            OCR1A  = currentSpeed;
+            OCR1A  = cSpeedl;
             OCR1B  = 0;
             OCR4A  = 0;
-            OCR4B  = currentSpeed;
+            OCR4B  = cSpeedr;
             break;
       default:
             OCR1A  = 0;

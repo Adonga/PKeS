@@ -32,7 +32,7 @@ public:
   long timewait=0;
   char h=0;
   char g=0;
-  int Update(IRC *irc1, IRC *irc2, MyGyro *mygyro);
+  int Update(IRC *irc1, IRC *irc2, MyGyro *mygyro,int intr1,int intr2);
 
   void bla();
 
@@ -45,6 +45,9 @@ public:
 
 
   void ChangeMove(Direction now);
+	
+	int offSetLeft = 0;
+	int offSetRight= 0;
   
   
 };
