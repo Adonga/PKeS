@@ -53,17 +53,17 @@ void PID::setMotorspeed ( int newSpeed )
 {
 	speed = newSpeed;
 }
-int* PID::currentSpeed()
+void PID::currentSpeed(int L0R1[])
 {
 	speed = prevSpeed + ( dSpeed * ( tarSpeed - prevSpeed ) / 10 );
 	
 	dSpeed < 10 ? ++dSpeed : dSpeed;
 	
-	int L0R1[2];
+
 	int reg = PID::compute();
 	L0R1[0] = speed - reg;
-	L0R1[0] = speed + reg;
+	L0R1[1] = speed + reg;
 
 
-	return L0R1;
+	
 }

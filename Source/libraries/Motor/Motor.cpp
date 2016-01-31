@@ -230,7 +230,8 @@ Motor::Motor()
     _delay_us(200);
     PORTH&=~(1<<3);
     dir=now;
-		int* currentSpeedLR  = m_pid.currentSpeed();
+		int currentSpeedLR[2];
+  	m_pid.currentSpeed( currentSpeedLR );
     int cSpeedl = currentSpeedLR[0];//currentSpeed + offSetLeft;
 		int cSpeedr = currentSpeedLR[1];//currentSpeed + offSetRight;
       switch(dir)

@@ -22,7 +22,7 @@ class PID {
 	int compute();  
 
 	void setMotorspeed (int motor);
-	int* currentSpeed();
+	void currentSpeed(int L0R1[]);
 
 
 	private:
