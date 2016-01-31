@@ -34,7 +34,12 @@
 		d ... druchmesser Rad  ca 5cm */
 		distanceDrivenL = (314 * intr1 * 500)  /1800;  // should be cm
 		distanceDrivenR = (314 * intr2 * 500)  /1800;  
-		return distanceDrivenL>distanceDrivenR?distanceDrivenL:distanceDrivenR;
+		return (distanceDrivenL+distanceDrivenR)/2;
+	}
+
+	int Odometrie::direction( int intr1, int intr2 )
+	{
+		return intr1 - intr2;
 	}
 
 

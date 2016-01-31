@@ -1,89 +1,69 @@
 #include "PID.h"
 
- PID::PID(){}
+PID:: PID(){};
+void PID::setPID(int p, int i, int d)
+{
+	kp = p;
+	ki = i;
+	kd = d;
+}
+
 void PID::setInput(int tmp)
 {
 	Input = tmp;
 }
 
-void PID::setpoint(int tmp)
+void PID::setTarget( int tmp )
 {
-  Setpoint = tmp;
+  target = tmp;
 }
 
-void PID::Compute()
-{
-   unsigned long now = millis();
-   int timeChange = (now - lastTime);
-   if(timeChange>=SampleTime)
-   {
-      /*Compute all the working error variables*/
-      double error = Setpoint - Input;
-      ITerm+= (ki * error);
-      if(ITerm > outMax) ITerm= outMax;
-      else if(ITerm < outMin) ITerm= outMin;
-      double dInput = (Input - lastInput);
- 
-      /*Compute PID Output*/
-      Output = kp * error + ITerm- kd * dInput;
-      if(Output > outMax) Output = outMax;
-      else if(Output < outMin) Output = outMin;
- 
-      /*Remember some variables for next time*/
-      lastInput = Input;
-      lastTime = now;
-   }
-}
- 
-void PID::SetTunings(double Kp, double Ki, double Kd)
-{
-
-  double SampleTimeInSec = ((double)SampleTime)/1000;
-   kp = Kp;
-   ki = Ki * SampleTimeInSec;
-   kd = Kd / SampleTimeInSec;
- 
-}
- 
-void PID::SetSampleTime(int NewSampleTime)
-{
-   if (NewSampleTime > 0)
-   {
-      double ratio  = (double)NewSampleTime
-                      / (double)SampleTime;
-      ki *= ratio;
-      kd /= ratio;
-      SampleTime = (unsigned long)NewSampleTime;
-   }
-}
- 
-void PID::SetOutputLimits(double Min, double Max)
+void PID::SetOutputLimits( int Min, int Max )
 {
    if(Min > Max) return;
    outMin = Min;
    outMax = Max;
  
-   if(Output > outMax) Output = outMax;
-   else if(Output < outMin) Output = outMin;
- 
-   if(ITerm > outMax) ITerm= outMax;
-   else if(ITerm < outMin) ITerm= outMin;
+   if(output > outMax) output = outMax;
+   else if(output < outMin) output = outMin;
 }
- 
-void PID::SetMode(int Mode)
+
+int PID::compute()
 {
-    bool newAuto = (Mode == AUTOMATIC);
-    if(newAuto == !inAuto)
-    {  /*we just went from manual to auto*/
-        Initialize();
-    }
-    inAuto = newAuto;
+	int timeNow = millis();
+	int dTime = timeNow - timePast;
+	
+	int error = target - Input;
+	errSum += ( error * dTime );
+	
+	int dErr = (error - lastErr) / dTime;
+
+	output = kp * error + ki * errSum + kd * dErr;
+
+	lastErr = error;
+	timePast = timeNow;
+	
+	output > outMax ? outMax : output;
+	output < outMin ? outMin : output;	
+
+	return output;
 }
- 
-void PID::Initialize()
+  
+void PID::setMotorspeed ( int newSpeed )
 {
-   lastInput = Input;
-   ITerm = Output;
-   if(ITerm > outMax) ITerm= outMax;
-   else if(ITerm < outMin) ITerm= outMin;
+	speed = newSpeed;
+}
+int* PID::currentSpeed()
+{
+	speed = prevSpeed + ( dSpeed * ( tarSpeed - prevSpeed ) / 10 );
+	
+	dSpeed < 10 ? ++dSpeed : dSpeed;
+	
+	int L0R1[2];
+	int reg = PID::compute();
+	L0R1[0] = speed - reg;
+	L0R1[0] = speed + reg;
+
+
+	return L0R1;
 }

@@ -10,6 +10,7 @@ class Odometrie
 		Odometrie();
 		void init();
 		int distance(int intr1, int intr2);
+		int direction( int intr1, int intr2 );
 	private:
 
 

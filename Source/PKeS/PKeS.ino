@@ -33,19 +33,11 @@ IRC irc2(s2);
     motor.interrupt2++;
   }
   
-PID pid;
 
 void setup() 
 {
   // put your setup code here, to run once:
   Serial.begin(57600);
-  pid.SetSampleTime(20);
-  pid.setInput(100);
-  pid.SetMode(1);
-  pid.SetOutputLimits(100,200);
-  pid.setpoint(190);
-  pid.SetTunings( 0.5, 0.2, 0.3 );
- // pid.SetControllerDirection();
   _delay_ms(100);
   Serial.println("0123456789");
   dis.ShowCleared();
@@ -85,8 +77,7 @@ char t=0;
 void loop() 
 {
   // put your main code here, to run repeatedly:
-  pid.setInput(pid.Output);
-  pid.Compute();
+ 
   
   int b=adc.convert();
   irc1.addvalue(b);

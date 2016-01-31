@@ -39,12 +39,13 @@ Motor::Motor()
     OCR1B  = 0;
 
     
-    ICR4   = 255;
+    ICR4   = 255;	
     TCCR4A = ( 1 << COM1A1 ) | ( 1 << COM1B1 ) | ( 1 << WGM11 );
     TCCR4B = ( 1 << WGM13  ) | ( 1 << WGM12 ) | ( 1 << CS10 );
     OCR4A  = 0;
     OCR4B  = 0;
 
+		m_pid.setPID(5,0,0);
   }
 
  int Motor::Update(IRC *irc1, IRC *irc2, MyGyro *mygyro)

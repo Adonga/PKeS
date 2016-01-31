@@ -1,39 +1,36 @@
 #ifndef PID_H
 #define PID_H
-#include "Arduino.h"
+#include "Arduino.h"  //for millis
 
 class PID {
 	public:
-	PID();
+	PID(int p, int i, int d);
 
 	/*working variables*/
-	unsigned long lastTime;
-	double Input, Output, Setpoint;
-	double ITerm, lastInput;
-	double kp, ki, kd;
-	int SampleTime = 1000; //1 sec
-	double outMin, outMax;
-	bool inAuto = false;
+	int timePast;
+	int Input, output, target;
+	int lastInput;
+	int errSum,error,lastErr;
+	int outMin, outMax;
+	int kp,ki,kd; // 
+	int speed,prevSpeed,tarSpeed,dSpeed;
  
-	#define MANUAL 0
-	#define AUTOMATIC 1
- 
-	#define DIRECT 0
-	#define REVERSE 1
-	int controllerDirection = DIRECT;
-
-	void Compute();  
 	void setInput(int tmp);
-	void setpoint(int tmp);
-	void SetTunings(double Kp, double Ki, double Kd);
-	void SetSampleTime(int NewSampleTime);
-	void SetOutputLimits(double Min, double Max);
-	void SetMode(int Mode);
-	void Initialize();
+	void setPID(int p, int i, int d);
+	void setTarget(int tmp);
+	void SetOutputLimits(int Min, int Max);
+	int compute();  
+
+	void setMotorspeed (int motor);
+	int* currentSpeed();
 
 
 	private:
+
 };
 
+//K_p = P	momenatner Wert des Fehlers
+//K_i = I	früherer Wert des Fehler
+//K_d = D	eventueller zukuenftiger Wert des Fehlers
 
 #endif

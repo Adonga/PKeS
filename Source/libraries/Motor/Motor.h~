@@ -3,6 +3,8 @@
 #include <Arduino.h>
 #include "Gyro.h"
 #include "IRC.h"
+#include "PID.h"
+
 enum Direction{
   Stay,Forward,Backward,Right,Left
 };
@@ -24,6 +26,7 @@ public:
   Direction dir=Stay;
   SpeedMode currentSpeed=Zero;
   MoveMode cMode=Drive;
+	
   Motor();
   
 
@@ -33,7 +36,7 @@ public:
   long timewait=0;
   char h=0;
   char g=0;
-  int Update(IRC *irc1, IRC *irc2, MyGyro *mygyro,int intr1,int intr2);
+  int Update(IRC *irc1, IRC *irc2, MyGyro *mygyro);
 
   void bla();
 
@@ -49,7 +52,8 @@ public:
 	
 	int offSetLeft = 0;
 	int offSetRight= 0;
-  
+  private:
+		PID m_pid;
   
 };
 
