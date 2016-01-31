@@ -53,7 +53,7 @@ Motor::Motor()
 
  int Motor::Update(IRC *irc1, IRC *irc2, MyGyro *mygyro)
   {
-		int tmp = interrupt1 - interrupt2; //int right,int left
+/*		int tmp = interrupt1 - interrupt2; //int right,int left
 		if( (tmp-1)>0 || (tmp+1)<0 )
 		{
 		if( tmp > 0 ) 
@@ -61,6 +61,7 @@ Motor::Motor()
 		else 
 	 		{offSetLeft-=2; }
 		}
+*/
     int t1,t2,t3,t4;
     switch(cMode){
 
