@@ -18,7 +18,7 @@ class PID {
 	void setInput(int tmp);
 	void setPID(int p, int i, int d);
 	void setTarget(int tmp);
-	void SetOutputLimits(int Min, int Max);
+	void setOutputLimits(int Min, int Max);
 	int compute();  
 
 	void setMotorspeed (int motor);

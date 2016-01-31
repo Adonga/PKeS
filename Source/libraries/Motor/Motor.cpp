@@ -47,6 +47,7 @@ Motor::Motor()
 
 		m_pid.setPID(5,0,0);
 		m_pid.setOutputLimits(2,5);
+		m_pid.tarSpeed = 150;
   }
 
  int Motor::Update(IRC *irc1, IRC *irc2, MyGyro *mygyro)
@@ -59,8 +60,6 @@ Motor::Motor()
 		else 
 	 		{offSetLeft-=2; }
 		}
-		interrupt1 = 0;
-		interrupt2 = 0;
     int t1,t2,t3,t4;
     switch(cMode){
 
@@ -229,8 +228,9 @@ Motor::Motor()
     _delay_us(200);
     PORTH&=~(1<<3);
     dir=now;
-    int cSpeedl = currentSpeed + offSetLeft;
-		int cSpeedr = currentSpeed + offSetRight;
+		int* currentSpeedLR  = m_pid.currentSpeed();
+    int cSpeedl = currentSpeedLR[0];//currentSpeed + offSetLeft;
+		int cSpeedr = currentSpeedLR[1];//currentSpeed + offSetRight;
       switch(dir)
       {
       case Stay:

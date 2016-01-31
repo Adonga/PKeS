@@ -4,7 +4,7 @@
 
 class PID {
 	public:
-	PID(int p, int i, int d);
+	PID();
 
 	/*working variables*/
 	int timePast;
