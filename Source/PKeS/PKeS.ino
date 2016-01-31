@@ -111,6 +111,7 @@ void loop()
           break;
     case 4:
           h=motor.Update(&irc1,&irc2, &mygyro );
+					motor.m_pid.setTarget(500);
           if(h)motor.ChangeMode(Drive);
           break;
 

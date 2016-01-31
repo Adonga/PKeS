@@ -45,8 +45,10 @@ Motor::Motor()
     OCR4A  = 0;
     OCR4B  = 0;
 
-		m_pid.setPID(5,0,0);
-		m_pid.setOutputLimits(2,5);
+		m_pid.setPID(1,0,0);
+		m_pid.setOutputLimits(-5,5);
+		m_pid.tarSpeed = 150;
+		
   }
 
  int Motor::Update(IRC *irc1, IRC *irc2, MyGyro *mygyro)
@@ -212,6 +214,7 @@ Motor::Motor()
   void Motor::ChangeSpeed(SpeedMode mode)
   {
     currentSpeed=mode;
+		m_pid.setMotorspeed();
     ChangeMove(dir);
   }
   void Motor::ChangeMode(MoveMode mm)
