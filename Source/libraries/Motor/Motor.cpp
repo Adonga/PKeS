@@ -45,8 +45,8 @@ Motor::Motor()
     OCR4A  = 0;
     OCR4B  = 0;
 
-		m_pid.setPID(1,0,0);
-		m_pid.setOutputLimits(-5,5);
+		m_pid.setPID( 0.3, 0, 0.2 );
+		m_pid.setOutputLimits( -20,20 );
 		m_pid.tarSpeed = 150;
 		
   }
@@ -214,8 +214,7 @@ Motor::Motor()
 
   void Motor::ChangeSpeed(SpeedMode mode)
   {
-    currentSpeed=mode;
-		m_pid.setMotorspeed(mode);
+//		m_pid.setMotorspeed(mode);
     ChangeMove(dir);
   }
   void Motor::ChangeMode(MoveMode mm)
@@ -232,9 +231,14 @@ Motor::Motor()
     PORTH&=~(1<<3);
     dir=now;
 		int currentSpeedLR[2];
-  	m_pid.currentSpeed( currentSpeedLR );
+  	m_pid.currentSpeed( currentSpeedLR, interrupt1 - interrupt2 );
     int cSpeedl = currentSpeedLR[0];//currentSpeed + offSetLeft;
 		int cSpeedr = currentSpeedLR[1];//currentSpeed + offSetRight;
+		
+	  Serial.print(	cSpeedl );
+		Serial.print(	" L|R " );
+		Serial.println(	cSpeedr );
+
       switch(dir)
       {
       case Stay:

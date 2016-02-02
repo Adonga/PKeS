@@ -25,14 +25,15 @@ IRC irc2(s2);
 
   ISR( INT2_vect )
   {
-   motor.interrupt1++;
+   motor.interrupt1++;  //rechts
   }
   
   ISR ( PCINT1_vect )
   {
-    motor.interrupt2++;
+    motor.interrupt2++; //links
   }
-  
+
+  bool a = true;
 
 void setup() 
 {
@@ -57,10 +58,9 @@ void setup()
     mygyro.gyroAverage /= mygyro.lange;
 
     motor.init();
-
     odo.init();
     _delay_ms(10);
-    
+    motor.m_pid.setTarget(50);
    Serial.println(TCCR1A);
    Serial.println(TCCR1B);
    Serial.println(TCCR4A);
@@ -90,14 +90,16 @@ void loop()
   int t1 = irc2.cValue;
   int t2 = irc1.cValue;
 
-  switch(t){
-    case 0:
-          dis.ShowCleared();
-          motor.Stop();
           Serial.print("interrupt1r: ");
           Serial.print(motor.interrupt1);
           Serial.print("    interrupt2l ");
           Serial.println(motor.interrupt2);
+
+
+  switch(t){
+    case 0:
+          dis.ShowCleared();
+          motor.Stop();
           break;
     case 1:
           irc1.showConverted(&dis);
@@ -111,7 +113,6 @@ void loop()
           break;
     case 4:
           h=motor.Update(&irc1,&irc2, &mygyro );
-					motor.m_pid.setTarget(500);
           if(h)motor.ChangeMode(Drive);
           break;
 
@@ -148,6 +149,7 @@ void loop()
     
   }
  
+ //if(a){_delay_ms(10000); a = false;}
   _delay_ms(100);
 //*
                 // read the incoming byte:

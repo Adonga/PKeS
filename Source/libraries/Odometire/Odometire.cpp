@@ -27,19 +27,24 @@
 
 
   }
-	int Odometrie::distance(int intr1, int intr2)
+	int Odometrie::distanceR(int right)
 	{
 		/*ds = pi * d * n
 		n ... anzahl Rad umdrehungen
 		d ... druchmesser Rad  ca 5cm */
-		distanceDrivenL = (314 * intr1 * 500)  /1800;  // should be cm
-		distanceDrivenR = (314 * intr2 * 500)  /1800;  
-		return (distanceDrivenL+distanceDrivenR)/2;
+		distanceDrivenR = (314 * right * 500)  /1800;  // should be cm
+		return distanceDrivenR;
 	}
 
-	int Odometrie::direction( int intr1, int intr2 )
+	int Odometrie::distanceL(int left)
 	{
-		return intr1 - intr2;
+		/*ds = pi * d * n
+		n ... anzahl Rad umdrehungen
+		d ... druchmesser Rad  ca 5cm */
+		distanceDrivenL = (314 * left * 500)  /1800;  // should be cm
+		return distanceDrivenL;
 	}
+
+
 
 

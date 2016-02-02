@@ -52,7 +52,7 @@ public:
 	
 	int offSetLeft = 0;
 	int offSetRight= 0;
-  private:
+  
 	PID m_pid;
   
 };

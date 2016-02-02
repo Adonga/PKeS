@@ -21,8 +21,8 @@ class Motor
 {
 public:
 
-	int interrupt1;
-	int interrupt2;
+	int interrupt1; //right
+	int interrupt2;	//left
   Direction dir=Stay;
   SpeedMode currentSpeed=Zero;
   MoveMode cMode=Drive;

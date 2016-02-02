@@ -8,21 +8,20 @@ class PID {
 
 	/*working variables*/
 	int timePast;
-	int Input, output, target;
-	int lastInput;
+	int output, target;
 	int errSum,error,lastErr;
 	int outMin, outMax;
-	int kp,ki,kd; // 
+	float kp,ki,kd; // 
 	int speed,prevSpeed,tarSpeed,dSpeed;
  
-	void setInput(int tmp);
-	void setPID(int p, int i, int d);
+	void setInput( int tmp );
+	void setPID( float p, float i, float d );
 	void setTarget(int tmp);
-	void setOutputLimits(int Min, int Max);
-	int compute();  
+	void setOutputLimits( int Min, int Max );
+	int compute( int direction );  
 
-	void setMotorspeed (int motor);
-	void currentSpeed(int L0R1[]);
+	void setMotorspeed ( int motor );
+	void currentSpeed( int L0R1[], int direction );
 
 
 	private:

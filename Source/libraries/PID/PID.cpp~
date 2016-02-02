@@ -1,16 +1,11 @@
 #include "PID.h"
 
 PID:: PID(){};
-void PID::setPID(int p, int i, int d)
+void PID::setPID(float p, float i, float d)
 {
 	kp = p;
 	ki = i;
 	kd = d;
-}
-
-void PID::setInput(int tmp)
-{
-	Input = tmp;
 }
 
 void PID::setTarget( int tmp )
@@ -28,12 +23,13 @@ void PID::setOutputLimits( int Min, int Max )
    else if(output < outMin) output = outMin;
 }
 
-int PID::compute()
+int PID::compute( int direction )
 {
+
 	int timeNow = millis();
 	int dTime = timeNow - timePast;
 	
-	int error = target - Input;
+	int error = target - direction;
 	errSum += ( error * dTime );
 	
 	int dErr = (error - lastErr) / dTime;
@@ -42,28 +38,28 @@ int PID::compute()
 
 	lastErr = error;
 	timePast = timeNow;
-	
-	output > outMax ? outMax : output;
-	output < outMin ? outMin : output;	
+	Serial.println(output);
+	if( output > outMax ) { output	outMax; }
+	if( output < outMin ) { output = outMin; }	
 
-	return output;
+	return (int)output;
 }
   
 void PID::setMotorspeed ( int newSpeed )
 {
 	speed = newSpeed;
 }
-void PID::currentSpeed(int* L0R1)
+void PID::currentSpeed( int L0R1[], int direction )
 {
-	speed = prevSpeed + ( dSpeed * ( tarSpeed - prevSpeed ) / 10 );
+	prevSpeed = speed;	
+	speed = prevSpeed + ( ( tarSpeed - prevSpeed ) );
+
 	
-	dSpeed < 10 ? ++dSpeed : dSpeed;
+
+	int reg = PID::compute( direction );
+//	Serial.println(	reg );
+	L0R1[0] = (speed + (reg));
+	L0R1[1] = (speed - (reg));
 	
-
-	int reg = PID::compute();
-	L0R1[0] = speed - reg;
-	L0R1[1] = speed + reg;
-
-
 	
 }
