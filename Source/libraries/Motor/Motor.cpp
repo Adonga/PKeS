@@ -202,8 +202,12 @@ Motor::Motor()
   void Motor::ChangeSpeed( Control::LR *leftright )
   {
 //		m_pid.setMotorspeed(mode);
-		currentSpeedLR[0] = limit < leftright->leftM ? limit : leftright->leftM;
-		currentSpeedLR[1] = limit < leftright->rightM ? limit : leftright->rightM;
+		currentSpeedLR[0] = limit <= leftright->leftM ? limit : leftright->leftM;
+		currentSpeedLR[1] = limit <= leftright->rightM ? limit : leftright->rightM;
+
+		currentSpeedLR[0] = leftright->leftM;
+		currentSpeedLR[1] = leftright->rightM;
+
 
     ChangeMove(dir);
   }
@@ -230,8 +234,12 @@ Motor::Motor()
 
     int cSpeedl = currentSpeedLR[0];//currentSpeed + offSetLeft;
 		int cSpeedr = currentSpeedLR[1];//currentSpeed + offSetRight;
-		cSpeedr = cSpeedr<0? limit:cSpeedr ;
+//		cSpeedr = cSpeedr<0? limit:cSpeedr;
+/*
+		Serial.print(cSpeedl);
+		Serial.print(" L|R ");
 		Serial.println(cSpeedr);
+*/
 
       switch(dir)
       {

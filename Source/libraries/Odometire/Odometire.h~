@@ -13,8 +13,6 @@ class Odometrie
 		int32_t distanceL( );
 		int left( );
 		int right( );
-		volatile int interrupt1; //right
-		volatile int interrupt2; //left
 		void reset();
 		
 // get left and right ticks
@@ -22,6 +20,8 @@ class Odometrie
 // sth that resets the ticks
 // 
 	private:
+		volatile int interrupt1; //right
+		volatile int interrupt2; //left
 
 
 };

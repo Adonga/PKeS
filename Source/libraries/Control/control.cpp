@@ -35,7 +35,7 @@ Control::LR Control::currentSpeed( int currentDir )
 {
 	m_prevSpeed = m_motorSpeed;
   m_motorSpeed = m_prevSpeed + (  ( m_targetSpeed - m_prevSpeed )  );
-
+//currentDir = 0;
     if( m_speedChangeStep < LIN_ACC_STEPS )
         ++m_speedChangeStep;
 

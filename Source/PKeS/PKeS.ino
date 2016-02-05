@@ -110,7 +110,7 @@ void setup()
     odo.init();
     _delay_ms(10);
     control.getpid().setP( 1 );
-    control.getpid().setD( 0.5 );
+    control.getpid().setD( 0.3 );
     control.setMotorspeed( speed150, true );
     motor.limit = speed150;
     control.setTargetDirection( 0 );
@@ -152,9 +152,10 @@ void loop()
       Serial.println(odo.interrupt2);
 */
   
-//  int dire = odo.distanceR() - odo.distanceL(); //pos is it has a right twist negative left twist
-  int dire = odo.right() - odo.left(); 
+//  int dire = odo.distanceL() - odo.distanceR(); //pos is it has a right twist negative left twist
+  int dire = odo.left() - odo.right() ; 
   Control::LR lr = control.currentSpeed( -dire );
+  Serial.println(dire); //-> 7
 
   switch(t){
     case 0:
