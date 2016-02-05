@@ -5,12 +5,22 @@
 class Odometrie
 {
 	public:
-		int distanceDrivenL;
-		int distanceDrivenR;
+		int32_t distanceDrivenL;
+		int32_t distanceDrivenR;
 		Odometrie();
 		void init();
-		int distanceR( int right );
-		int distanceL( int left );
+		int32_t distanceR( );
+		int32_t distanceL( );
+		int left( );
+		int right( );
+		volatile int interrupt1; //right
+		volatile int interrupt2; //left
+		void reset();
+		
+// get left and right ticks
+// get disance driven by  each weel
+// sth that resets the ticks
+// 
 	private:
 
 

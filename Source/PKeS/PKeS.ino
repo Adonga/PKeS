@@ -8,7 +8,7 @@
 #include "ADConverter.h"
 #include "Odometire.h"
 #include "PID.h"
-
+#include "control.h"
 
 
 class InputCache
@@ -59,8 +59,6 @@ public:
 };
 
 
-
-
 Display dis;
 MyGyro mygyro;
 Motor motor;
@@ -72,21 +70,19 @@ int s1[10]={272,217,179,153,138,130,125,118,111,110};
 IRC irc1(s1);
 int s2[10]={506,400,334,284,253,226,205,185,170,158};
 IRC irc2(s2);
-
+int speed150 = 156;
 
    Odometrie odo;
-
+   Control control(speed150);
   ISR( INT2_vect )
   {
-   motor.interrupt1++;  //rechts
+   odo.interrupt1++;  //rechts
   }
   
   ISR ( PCINT1_vect )
   {
-    motor.interrupt2++; //links
+    odo.interrupt2++; //links
   }
-
-  bool a = true;
 
 void setup() 
 {
@@ -113,7 +109,12 @@ void setup()
     motor.init();
     odo.init();
     _delay_ms(10);
-    motor.m_pid.setTarget(50);
+    control.getpid().setP( 1 );
+    control.getpid().setD( 0.5 );
+    control.setMotorspeed( speed150, true );
+    motor.limit = speed150;
+    control.setTargetDirection( 0 );
+
    Serial.println(TCCR1A);
    Serial.println(TCCR1B);
    Serial.println(TCCR4A);
@@ -126,6 +127,8 @@ static byte km=0;
 static int val=0;
 static bool otherin=false;
 char t=0;
+bool forward = true;
+bool turn = false;
 
 void loop() 
 {
@@ -142,17 +145,22 @@ void loop()
 
   int t1 = irc2.cValue;
   int t2 = irc1.cValue;
-
-          Serial.print("interrupt1r: ");
-          Serial.print(motor.interrupt1);
-          Serial.print("    interrupt2l ");
-          Serial.println(motor.interrupt2);
-
+/*      
+      Serial.print("Interrupt1: ");
+      Serial.print(odo.interrupt1);
+      Serial.print("  Interrupt2: ");
+      Serial.println(odo.interrupt2);
+*/
+  
+//  int dire = odo.distanceR() - odo.distanceL(); //pos is it has a right twist negative left twist
+  int dire = odo.right() - odo.left(); 
+  Control::LR lr = control.currentSpeed( -dire );
 
   switch(t){
     case 0:
           dis.ShowCleared();
           motor.Stop();
+          odo.reset();
           break;
     case 1:
           irc1.showConverted(&dis);
@@ -167,8 +175,8 @@ void loop()
     case 4:
           h=motor.Update(&irc1,&irc2, &mygyro );
           if(h)motor.ChangeMode(Drive);
+          _delay_ms(20);
           break;
-
     case 5:
           motor.cMode=Rotate;
           h=motor.Update(&irc1,&irc2,&mygyro );
@@ -182,18 +190,18 @@ void loop()
           Serial.println(km);
           break;
     case 7:
-          motor.dir=Backward;
-          motor.ChangeSpeed(Middle);  
-          
+          motor.dir=Forward;
+          motor.ChangeSpeed( &lr );
+          _delay_ms(20);
           break;
 
     case 8:
           motor.dir=Right;
-          motor.ChangeSpeed(Middle);  
+          motor.ChangeSpeed( Middle );  
           break;
     case 9:
           motor.dir=Left;
-          motor.ChangeSpeed(Middle);  
+          motor.ChangeSpeed( Middle );  
           break;
     default:
     t=0;
@@ -236,8 +244,8 @@ void loop()
 
                         switch(type)
                         {
-                          case 'f':ICache.addValue(type,val);break;
-                          case 'r':ICache.addValue(type,val*12);break;
+                          case 'f':ICache.AddValue( type, val );break;
+                          case 'r':ICache.AddValue( type, val * 12 );break;
                           default:/*lol*/break;
                         }
                         vorzeichen=1;

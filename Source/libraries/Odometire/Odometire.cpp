@@ -27,24 +27,28 @@
 
 
   }
-	int Odometrie::distanceR(int right)
+	int32_t Odometrie::distanceR()
 	{
 		/*ds = pi * d * n
 		n ... anzahl Rad umdrehungen
 		d ... druchmesser Rad  ca 5cm */
-		distanceDrivenR = (314 * right * 500)  /1800;  // should be cm
+		distanceDrivenR = (314 * interrupt1 * 500)  /1800;  // should be cm
+		Serial.println(distanceDrivenR);
 		return distanceDrivenR;
 	}
 
-	int Odometrie::distanceL(int left)
+	int32_t Odometrie::distanceL()
 	{
 		/*ds = pi * d * n
 		n ... anzahl Rad umdrehungen
 		d ... druchmesser Rad  ca 5cm */
-		distanceDrivenL = (314 * left * 500)  /1800;  // should be cm
+		distanceDrivenL = (314 * interrupt2 * 500)  /1800;  // should be cm
 		return distanceDrivenL;
 	}
 
+	void Odometrie::reset(){interrupt1= 0; interrupt2 = 0;}
+  int Odometrie::left(){return interrupt2;}
+	int Odometrie::right(){return interrupt1;}
 
 
 

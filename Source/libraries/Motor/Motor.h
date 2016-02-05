@@ -3,7 +3,7 @@
 #include <Arduino.h>
 #include "Gyro.h"
 #include "IRC.h"
-#include "PID.h"
+#include "control.h"
 
 enum Direction{
   Stay,Forward,Backward,Right,Left
@@ -21,8 +21,7 @@ class Motor
 {
 public:
 
-	int interrupt1; //right
-	int interrupt2;	//left
+
   Direction dir=Stay;
   SpeedMode currentSpeed=Zero;
   MoveMode cMode=Drive;
@@ -36,14 +35,16 @@ public:
   long timewait=0;
   char h=0;
   char g=0;
-  int Update(IRC *irc1, IRC *irc2, MyGyro *mygyro);
+	int limit = 0;
+  int Update( IRC *irc1, IRC *irc2, MyGyro *mygyro );
 
   void bla();
 
   void Stop();
 
 
-  void ChangeSpeed(SpeedMode mode);
+  void ChangeSpeed( Control::LR *leftright );
+	void ChangeSpeed( SpeedMode mode );
 
   void ChangeMode(MoveMode mm);
 
@@ -53,7 +54,8 @@ public:
 	int offSetLeft = 0;
 	int offSetRight= 0;
   
-	PID m_pid;
+	int currentSpeedLR[2];
+
   
 };
 

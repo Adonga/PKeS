@@ -44,24 +44,11 @@ Motor::Motor()
     TCCR4B = ( 1 << WGM13  ) | ( 1 << WGM12 ) | ( 1 << CS10 );
     OCR4A  = 0;
     OCR4B  = 0;
-
-		m_pid.setPID( 0.3, 0, 0.2 );
-		m_pid.setOutputLimits( -20,20 );
-		m_pid.tarSpeed = 150;
 		
   }
 
- int Motor::Update(IRC *irc1, IRC *irc2, MyGyro *mygyro)
+ int Motor::Update( IRC *irc1, IRC *irc2, MyGyro *mygyro )
   {
-/*		int tmp = interrupt1 - interrupt2; //int right,int left
-		if( (tmp-1)>0 || (tmp+1)<0 )
-		{
-		if( tmp > 0 ) 
-			{offSetLeft+=2; }
-		else 
-	 		{offSetLeft-=2; }
-		}
-*/
     int t1,t2,t3,t4;
     switch(cMode){
 
@@ -212,11 +199,21 @@ Motor::Motor()
   }
 
 
-  void Motor::ChangeSpeed(SpeedMode mode)
+  void Motor::ChangeSpeed( Control::LR *leftright )
+  {
+//		m_pid.setMotorspeed(mode);
+		currentSpeedLR[0] = limit < leftright->leftM ? limit : leftright->leftM;
+		currentSpeedLR[1] = limit < leftright->rightM ? limit : leftright->rightM;
+
+    ChangeMove(dir);
+  }
+
+  void Motor::ChangeSpeed( SpeedMode mode )
   {
 //		m_pid.setMotorspeed(mode);
     ChangeMove(dir);
   }
+
   void Motor::ChangeMode(MoveMode mm)
   {
     
@@ -230,14 +227,11 @@ Motor::Motor()
     _delay_us(200);
     PORTH&=~(1<<3);
     dir=now;
-		int currentSpeedLR[2];
-  	m_pid.currentSpeed( currentSpeedLR, interrupt1 - interrupt2 );
+
     int cSpeedl = currentSpeedLR[0];//currentSpeed + offSetLeft;
 		int cSpeedr = currentSpeedLR[1];//currentSpeed + offSetRight;
-		
-	  Serial.print(	cSpeedl );
-		Serial.print(	" L|R " );
-		Serial.println(	cSpeedr );
+		cSpeedr = cSpeedr<0? limit:cSpeedr ;
+		Serial.println(cSpeedr);
 
       switch(dir)
       {

@@ -1,65 +1,45 @@
 #include "PID.h"
 
-PID:: PID(){};
-void PID::setPID(float p, float i, float d)
+PID::PID( float p, float d, float i ) :
+    m_p( p ), m_d( d ), m_i( i )
 {
-	kp = p;
-	ki = i;
-	kd = d;
+
 }
 
-void PID::setTarget( int tmp )
+void PID::setTarget( int target, int firstValue )
 {
-  target = tmp;
+    m_lastValue = firstValue;
+    m_target    = target;
 }
 
-void PID::setOutputLimits( int Min, int Max )
+void PID::setP(float p)
 {
-   if(Min > Max) return;
-   outMin = Min;
-   outMax = Max;
- 
-   if(output > outMax) output = outMax;
-   else if(output < outMin) output = outMin;
+    m_p = p;
 }
 
-int PID::compute( int direction )
+void PID::setD(float d)
 {
-
-	int timeNow = millis();
-	int dTime = timeNow - timePast;
-	
-	int error = target - direction;
-	errSum += ( error * dTime );
-	
-	int dErr = (error - lastErr) / dTime;
-
-	output = kp * error + ki * errSum + kd * dErr;
-
-	lastErr = error;
-	timePast = timeNow;
-	Serial.println(output);
-	if( output > outMax ) { output	outMax; }
-	if( output < outMin ) { output = outMin; }	
-
-	return (int)output;
+    m_d = d;
 }
-  
-void PID::setMotorspeed ( int newSpeed )
+
+void PID::setI(float i)
 {
-	speed = newSpeed;
+    m_i = i;
 }
-void PID::currentSpeed( int L0R1[], int direction )
+
+int16_t PID::result( int current )
 {
-	prevSpeed = speed;	
-	speed = prevSpeed + ( ( tarSpeed - prevSpeed ) );
+    int16_t diff = m_target - current;
 
-	
+		Serial.println(diff);
+	 
+  	m_integral += diff;
+    return m_i * m_integral +
+           m_d * static_cast<float>( diff - m_lastValue ) +
+           m_p * static_cast<float>( diff );
+}
 
-	int reg = PID::compute( direction );
-//	Serial.println(	reg );
-	L0R1[0] = (speed + (reg));
-	L0R1[1] = (speed - (reg));
-	
-	
+int PID::target() const
+{
+    return m_target;
 }
