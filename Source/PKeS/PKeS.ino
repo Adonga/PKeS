@@ -29,10 +29,14 @@ public:
       Serial.print("Cache full, the following Command Cant be added:");
       Serial.print(type);
       Serial.print(" ");
-      Serial.println(val);  
+      Serial.println((type=='r')?val/12:val);  
       }
       else
       {
+      Serial.print("Added the following Command:");
+      Serial.print(type);
+      Serial.print(" ");
+      Serial.println((type=='r')?val/12:val);  
        types[CEPointer]=type;
        values[CEPointer]=val;
        CEPointer=(CEPointer+1)%CacheSize;
@@ -130,6 +134,9 @@ char t=0;
 bool forward = true;
 bool turn = false;
 
+static char currentType=0;
+static int currentVal=0;
+
 void loop() 
 {
   // put your main code here, to run repeatedly:
@@ -155,7 +162,7 @@ void loop()
 //  int dire = odo.distanceL() - odo.distanceR(); //pos is it has a right twist negative left twist
   int dire = odo.left() - odo.right() ; 
   Control::LR lr = control.currentSpeed( -dire );
-  Serial.println(dire); //-> 7
+  //Serial.println(dire); //-> 7
 
   switch(t){
     case 0:
@@ -174,7 +181,9 @@ void loop()
           dis.showSmallNumber(h);
           break;
     case 4:
-          h=motor.Update(&irc1,&irc2, &mygyro );
+          h=motor.Update(&irc1,&irc2, &mygyro ,&lr);
+
+          
           if(h)motor.ChangeMode(Drive);
           _delay_ms(20);
           break;
@@ -222,11 +231,11 @@ void loop()
                byte incomingByte = Serial.read();
                 //Serial.println(incomingByte);
                 static char type=0;
-                static int vorzeichen=1;
-                static bool samevalue=true;
+                static int sign=1;
+                //static bool samevalue=true;
                 if(otherin){
                   switch(incomingByte){
-                    case '-':vorzeichen*=-1;break;
+                    case '-':sign*=-1;break;
                     case '1':val=(val*10) +1;break;
                     case '2':val=(val*10) +2;break;
                     case '3':val=(val*10) +3;break;
@@ -240,24 +249,39 @@ void loop()
                     
                     default:
 
-                      if(samevalue)
+                      //if(samevalue)
+                      //{
+                      //  samevalue=false;  
+                      //}
+                      //else
+                      if(val>0)
                       {
-                        samevalue=false;  
-                      }
-                      else
-                      {
-
+                      
                         switch(type)
                         {
-                          case 'f':ICache.AddValue(type,val);break;
-                          case 'r':ICache.AddValue(type,val*12);break;
+                          case 'f':ICache.AddValue(type,sign*val);break;
+                          case 'r':ICache.AddValue(type,sign*val*12);break;
                           default:/*lol*/break;
                         }
-                        vorzeichen=1;
+                        sign=1;
                         val=0;
                         type=0;
                         otherin=false;
-                        samevalue=true;
+
+                        switch(incomingByte)
+                        {
+                          case 'f':
+                            type='f';
+                            otherin=true;
+                          break;
+
+                          case 'r':
+                            type='r';
+                            otherin=true;
+                          break;
+                        default:break;  
+                        }
+                        //samevalue=true;
                       }
                           
                           
@@ -267,15 +291,15 @@ void loop()
                   switch(incomingByte)
                 {
                   case 's':t=0;break;
-                  case '1':t=1;break;
-                  case '2':t=2;break;
-                  case '3':t=3;break;
-                  case '4':t=4;break;
-                  case '5':t=5;break;
-                  case '6':t=6;break;
-                  case '7':t=7;break;
-                  case '8':t=8;break;
-                  case '9':t=9;break;
+                  //case '1':t=1;break;
+                  //case '2':t=2;break;
+                  //case '3':t=3;break;
+                  case 'd':t=4;break;
+                  //case '5':t=5;break;
+                  //case '6':t=6;break;
+                  //case '7':t=7;break;
+                  //case '8':t=8;break;
+                  //case '9':t=9;break;
                   //case 'a':t=10;break;
                   //case 'b':t=11;break;
                   //case 'c':t=12;break;

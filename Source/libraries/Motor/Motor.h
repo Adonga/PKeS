@@ -4,6 +4,7 @@
 #include "Gyro.h"
 #include "IRC.h"
 #include "control.h"
+#include "Odometire.h"
 
 enum Direction{
   Stay,Forward,Backward,Right,Left
@@ -19,13 +20,16 @@ enum MoveMode{
 
 class Motor
 {
+
 public:
 
 
   Direction dir=Stay;
   SpeedMode currentSpeed=Zero;
   MoveMode cMode=Drive;
-	
+
+  int driveDistance=0;//in mm
+
   Motor();
   
 
@@ -36,7 +40,7 @@ public:
   char h=0;
   char g=0;
 	int limit = 0;
-  int Update( IRC *irc1, IRC *irc2, MyGyro *mygyro );
+  int Update( IRC *irc1, IRC *irc2, MyGyro *mygyro ,Control::LR *leftright, Odometrie *odo);
 
   void bla();
 

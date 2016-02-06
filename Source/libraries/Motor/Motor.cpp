@@ -47,35 +47,61 @@ Motor::Motor()
 		
   }
 
- int Motor::Update( IRC *irc1, IRC *irc2, MyGyro *mygyro )
+ int Motor::Update( IRC *irc1, IRC *irc2, MyGyro *mygyro ,Control::LR *lr,Odometrie *odo)
   {
-    int t1,t2,t3,t4;
+	ChangeSpeed(lr);
+    int t1,t2,t3,t4,t5;
     switch(cMode){
 
       case Wait:
             Stop();
-            if(millis()-oldtime>=timewait)
-						{
-              cMode=Drive;
-              g=1;
-            }
+            
             break;
       
       case Drive:
-      /*
-          if(!g){
-            cMode=Drive;
-            oldtime=millis();
-            timewait=50;
-            break;
-          }
-          g=1;
-          */
+      
           t1=irc1->cValue;
           t2=irc2->cValue;
           t3=irc1->lValue;
           t4=irc2->lValue;
-          if(t1>230){
+		  dir=Forward;
+
+		  //check distance ...
+		  
+		  t5=(odo->left()+odo->right())/4;
+		  
+		  t5*=87;
+		  //t5-=driveDistance;
+		  
+		  if(t5>(driveDistance-22))
+		  {
+			return 1;
+		  }
+		  
+		  
+		  
+          break;
+
+      case DriveBy:
+	  
+	  /*
+            t1=irc1->cValue;
+            t2=irc2->cValue;
+            ChangeSpeed(VerySlow);  
+
+
+            
+            if(t1>150&&t2>150){
+             g=0;
+             dir=Stay;
+             cMode=Drive;
+            }
+
+
+*/
+
+/*
+		  if(t1>230){
 
               h=(h+1)%2;
              
@@ -125,33 +151,20 @@ Motor::Motor()
             
           }
 
+*/
 
-          break;
-
-      case DriveBy:
-            t1=irc1->cValue;
-            t2=irc2->cValue;
-            ChangeSpeed(VerySlow);  
-
-
-            
-            if(t1>150&&t2>150){
-             g=0;
-             dir=Stay;
-             cMode=Drive;
-            }
-
-
-
+		Serial.println("lol");
+		cMode=Wait;
             break;
       
       case Rotate:
+	  
           t1=mygyro->getUsefulNumber();
-
-          if(!t1){
+		  t2=mygyro->gyroChanged;
+          if(!t1||((t2>-5) && (t2<5))){
             dir=Stay;
             ChangeSpeed(Zero);
-            g=0;
+            //g=0;
             return 1;
             break;
           }else if(t1<0){
