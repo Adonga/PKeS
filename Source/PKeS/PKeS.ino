@@ -215,6 +215,10 @@ void loop()
   _delay_ms(100);
 //*
                 // read the incoming byte:
+               
+               while(true){
+                
+              
                byte incomingByte = Serial.read();
                 //Serial.println(incomingByte);
                 static char type=0;
@@ -245,8 +249,8 @@ void loop()
 
                         switch(type)
                         {
-                          case 'f':ICache.AddValue( type, val );break;
-                          case 'r':ICache.AddValue( type, val * 12 );break;
+                          case 'f':ICache.AddValue(type,val);break;
+                          case 'r':ICache.AddValue(type,val*12);break;
                           default:/*lol*/break;
                         }
                         vorzeichen=1;
@@ -286,6 +290,10 @@ void loop()
                   case 'r':otherin=true;type='r';break;  
                   default: break;
                 }  
+                }
+                if(otherin)continue;
+                break;
+                
                 }
 }
 
