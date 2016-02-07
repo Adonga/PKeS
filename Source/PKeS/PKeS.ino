@@ -60,6 +60,30 @@ public:
     }
     
   }
+
+  void Empty(bool show=true)
+  {
+    if(show)
+    {
+      char t=0;
+      int v=0;
+      for(;CSize>0;)
+      {
+          GetValues(t,v);
+          Serial.print("The queued Command: ");
+          Serial.print(t);
+          Serial.print(" ");
+          Serial.print(v);
+          Serial.println(" has been deleted.");
+            
+      }
+    }
+    else
+    {
+      CSPointer=CEPointer;
+      CSize=0;
+    }
+  }
 };
 
 
@@ -218,13 +242,24 @@ void loop()
 
           //h is 1 if the command is competed
 
-          if(h)
+          if(h==1)
           {
             Serial.print("The Following Command has been executed: ");
             Serial.print(currentType);
             Serial.print(" ");
             Serial.println(currentValue);
             nextCommand=true;
+          }
+          else if(h==-1)
+          {
+            //command cant be completed
+            Serial.print("The Current Command: ");
+            Serial.print(currentType);
+            Serial.print(" ");
+            Serial.print(currentValue);
+            Serial.print(" cant be completed, the queue is beeing deleted.");
+            ICache.Empty();
+            
           }
           
           
