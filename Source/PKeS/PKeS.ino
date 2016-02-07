@@ -29,14 +29,14 @@ public:
       Serial.print("Cache full, the following Command Cant be added:");
       Serial.print(type);
       Serial.print(" ");
-      Serial.println((type=='r')?val/12:val);  
+      Serial.println(val);  
       }
       else
       {
       Serial.print("Added the following Command:");
       Serial.print(type);
       Serial.print(" ");
-      Serial.println((type=='r')?val/12:val);  
+      Serial.println(val);  
        types[CEPointer]=type;
        values[CEPointer]=val;
        CEPointer=(CEPointer+1)%CacheSize;
@@ -135,7 +135,9 @@ bool forward = true;
 bool turn = false;
 
 static char currentType=0;
-static int currentVal=0;
+static int currentValue=0;
+
+static bool nextCommand=false;
 
 void loop() 
 {
@@ -181,16 +183,62 @@ void loop()
           dis.showSmallNumber(h);
           break;
     case 4:
-          h=motor.Update(&irc1,&irc2, &mygyro ,&lr);
+          if(nextCommand)
+          {
+            ICache.GetValues(currentType,currentValue);
+            odo.reset();
+            if(currentType=='f'&&currentValue==0)
+            {
+               t=0;
+               break;  
+            }
+            switch(currentType)
+            {
+              case 'f':
+              motor.ChangeMode(Drive);
+              motor.driveDistance=currentValue*100;
 
+              break;
+
+
+              case 'r':
+              motor.ChangeMode(Rotate);
+              mygyro.setValue(currentValue);
+
+              break;
+
+
+              default: Serial.println("that shouldnt be here ...");break;
+              
+            }
+
+            nextCommand=false;
+          }
+          h=motor.Update(&irc1,&irc2, &mygyro ,&lr, &odo);
+
+          //h is 1 if the command is competed
+
+          if(h)
+          {
+            Serial.print("The Following Command has been executed: ");
+            Serial.print(currentType);
+            Serial.print(" ");
+            Serial.println(currentValue);
+            nextCommand=true;
+          }
           
-          if(h)motor.ChangeMode(Drive);
-          _delay_ms(20);
+          
           break;
     case 5:
           motor.cMode=Rotate;
-          h=motor.Update(&irc1,&irc2,&mygyro );
+          h=motor.Update(&irc1,&irc2,&mygyro ,&lr,&odo);
           dis.showSmallNumber(mygyro.getUsefulNumber());
+          
+          /*
+          if(h)motor.ChangeMode(Drive);
+          _delay_ms(20);
+          */
+
           break;
     case 6:
           OCR1A  = km;
@@ -259,8 +307,13 @@ void loop()
                       
                         switch(type)
                         {
-                          case 'f':ICache.AddValue(type,sign*val);break;
-                          case 'r':ICache.AddValue(type,sign*val*12);break;
+                          case 'f':if(sign==1){
+                            ICache.AddValue(type,sign*val);
+                          }else{
+                            Serial.print("Command f cant have a value with sign. The Command is not added.");
+                          }
+                          break;
+                          case 'r':ICache.AddValue(type,sign*val);break;
                           default:/*lol*/break;
                         }
                         sign=1;
@@ -294,7 +347,7 @@ void loop()
                   //case '1':t=1;break;
                   //case '2':t=2;break;
                   //case '3':t=3;break;
-                  case 'd':t=4;break;
+                  case 'd':t=4;nextCommand=true;break;
                   //case '5':t=5;break;
                   //case '6':t=6;break;
                   //case '7':t=7;break;
