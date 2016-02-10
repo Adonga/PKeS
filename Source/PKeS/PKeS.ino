@@ -94,9 +94,12 @@ Waterscale scale;
 ADConverter adc;
 InputCache ICache;
 
-int s1[10]={272,217,179,153,138,130,125,118,111,110};
+
+//int s1[10]={272,217,179,153,138,130,125,118,111,110};
+int s1[10]={366,278,208,178,148,130,108,95,89,80};
 IRC irc1(s1);
-int s2[10]={506,400,334,284,253,226,205,185,170,158};
+//int s2[10]={506,400,334,284,253,226,205,185,170,158};
+int s2[10]={407,290,223,190,155,136,112,101,90,81};
 IRC irc2(s2);
 int speed150 = 156;
 
@@ -105,11 +108,19 @@ int speed150 = 156;
   ISR( INT2_vect )
   {
    odo.interrupt1++;  //rechts
+   if(odo.interrupt1>=motor.driveDistance){
+    motor.done=true;
+    motor.Stop();
+   }
   }
   
   ISR ( PCINT1_vect )
   {
     odo.interrupt2++; //links
+    if(odo.interrupt2>=motor.driveDistance){
+    motor.done=true;
+    motor.Stop();
+   }
   }
 
 void setup() 
@@ -198,21 +209,23 @@ void loop()
           odo.reset();
           break;
     case 1:
-          irc1.showConverted(&dis);
+          irc1.showConverted(&dis,false);
           break;
     case 2:
-          irc2.showConverted(&dis);
+          irc2.showConverted(&dis,false);
           break;
     case 3:
           h=mygyro.getUsefulNumber();
           dis.showSmallNumber(h);
           break;
     case 4:
+    
           if(nextCommand)
           {
             ICache.GetValues(currentType,currentValue);
             odo.reset();
-            mygyro.resetValue();
+            motor.done=false;
+            motor.invert=false;
             if(currentType=='f'&&currentValue==0)
             {
                t=0;
@@ -222,16 +235,21 @@ void loop()
             {
               case 'f':
               motor.ChangeMode(Drive);
-              motor.driveDistance=currentValue*100;
+              motor.driveDistance=currentValue*100/44;
 
               break;
 
 
               case 'r':
               motor.ChangeMode(Rotate);
-              //mygyro.setValue(currentValue);
+              if(((currentValue*10)/36)<0){
+                motor.invert=true;
+                motor.driveDistance=-((currentValue*10)/36);
+              }else{
+                motor.driveDistance=((currentValue*10)/36);  
+              }
+              
 
-              motor.driveDistance = currentValue;
               break;
 
 
@@ -260,9 +278,9 @@ void loop()
             Serial.print(currentType);
             Serial.print(" ");
             Serial.print(currentValue);
-            Serial.print(" cant be completed, the queue is beeing deleted.");
+            Serial.println(" cant be completed, the queue is beeing deleted.");
             ICache.Empty();
-            
+            nextCommand=true;
           }
           
           
@@ -397,8 +415,8 @@ void loop()
                   //case 'd':t=13;break;
                   //case 'e':t=14;break;
                   //case 'f':t=15;break;
-                  //case 'g':t=16;break;
-                  //case 'h':t=17;break;
+                  case 'g':t=16;break;
+                  case 'h':t=17;break;
                   case 'w':km+=1;break;
                   case 'm':km-=1;break;
                   case 'f':otherin=true;type='f';break;

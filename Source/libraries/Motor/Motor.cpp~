@@ -52,7 +52,7 @@ Motor::Motor()
 	ChangeSpeed(lr);
 	
     int t1,t2,t3,t4,t5;
-    int distanceDriven,distanceToDrive,middleDistance;
+		int distanceDriven,distanceToDrive;    
 	switch(cMode){
 
       case Wait:
@@ -69,19 +69,27 @@ Motor::Motor()
 		  dir=Forward;
 
 		  //check distance ...
-		  distanceDriven = (odo->left() + odo->right() )/2 * 44/100;
-			distanceToDrive = driveDistance - distanceDriven;
-			middleDistance = (t1+t2)/2;		  
-			if ( middleDistance > 10|| middleDistance < 30 ) 
+		  
+		  distanceDriven=(odo->left())*44/10;
+		  distanceToDrive=(driveDistance*44/10)-distanceDriven;
+		  t5=(t1+t2)/2;
+		  
+		  if(t5>100&&t5<300)
 		  {
-				Serial.println(middleDistance);
-				if( distanceToDrive > middleDistance )
-				{
-					Serial.println(middleDistance);
-					Stop();
-					return -1;
-				}
+			Serial.print(distanceDriven);
+			Serial.print("distanceDriven  ");
+			Serial.print(distanceToDrive);
+			Serial.print("distanceToDrive ");
+			Serial.println(t5);
+			if(distanceToDrive>t5)
+			{
+				Stop();
+				return -1;
 			}
+		  
+		  }
+			
+		  
 		  
 		  if(done){
 
@@ -189,19 +197,22 @@ Motor::Motor()
             break;
       
       case Rotate:
-			if(!invert){
+	
+	
+		if(!invert){
 			
-				dir=Right;
+			dir=Right;
 		
-			}else{
-				dir=Left;		
-			}
+		}else{
+			dir=Left;
+			
+		}
 	
 		if(done){
 			return 1;
 		}
-/**	  
-
+	  
+	  /*
           t1=mygyro->getUsefulNumber();
 		  t2=mygyro->gyroChanged;
           if(!t1||((t2>-5) && (t2<5))){

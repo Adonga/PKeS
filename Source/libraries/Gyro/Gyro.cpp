@@ -27,8 +27,7 @@ MyGyro::MyGyro()
     const int magicNumber = 8; //why?
     int tmp = gyroChanged * magicNumber; //
     int tmp2 = elapsedTime;
-   	tmp = tmp/10;
-		tmp = tmp * 10;
+   
     return tmp/tmp2 ;
   }
 
