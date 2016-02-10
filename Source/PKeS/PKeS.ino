@@ -105,19 +105,11 @@ int speed150 = 156;
   ISR( INT2_vect )
   {
    odo.interrupt1++;  //rechts
-   if(odo.interrupt1>=motor.driveDistance){
-    motor.done=true;
-    motor.Stop();
-   }
   }
   
   ISR ( PCINT1_vect )
   {
     odo.interrupt2++; //links
-    if(odo.interrupt2>=motor.driveDistance){
-    motor.done=true;
-    motor.Stop();
-   }
   }
 
 void setup() 
@@ -216,13 +208,11 @@ void loop()
           dis.showSmallNumber(h);
           break;
     case 4:
-    
           if(nextCommand)
           {
             ICache.GetValues(currentType,currentValue);
             odo.reset();
-            motor.done=false;
-            motor.invert=false;
+            mygyro.resetValue();
             if(currentType=='f'&&currentValue==0)
             {
                t=0;
@@ -232,21 +222,15 @@ void loop()
             {
               case 'f':
               motor.ChangeMode(Drive);
-              motor.driveDistance=currentValue*100/44;
+              motor.driveDistance=currentValue*100;
 
               break;
 
 
               case 'r':
               motor.ChangeMode(Rotate);
+              //mygyro.setValue(currentValue);
 
-              if(((currentValue*10)/36)<0){
-                motor.invert=true;
-                motor.driveDistance=-((currentValue*10)/36);
-              }else{
-                motor.driveDistance=((currentValue*10)/36);  
-              }
-              
               motor.driveDistance = currentValue;
               break;
 
@@ -276,9 +260,9 @@ void loop()
             Serial.print(currentType);
             Serial.print(" ");
             Serial.print(currentValue);
-            Serial.println(" cant be completed, the queue is beeing deleted.");
+            Serial.print(" cant be completed, the queue is beeing deleted.");
             ICache.Empty();
-            nextCommand=true;
+            
           }
           
           
@@ -398,8 +382,8 @@ void loop()
                   switch(incomingByte)
                 {
                   case 's':t=0;break;
-                  //case '1':t=1;break;
-                  //case '2':t=2;break;
+                  case '1':t=1;break;
+                  case '2':t=2;break;
                   //case '3':t=3;break;
                   case 'd':t=4;nextCommand=true;break;
                   //case '5':t=5;break;

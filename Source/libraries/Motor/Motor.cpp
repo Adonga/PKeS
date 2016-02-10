@@ -52,7 +52,7 @@ Motor::Motor()
 	ChangeSpeed(lr);
 	
     int t1,t2,t3,t4,t5;
-    
+    int distanceDriven,distanceToDrive,middleDistance;
 	switch(cMode){
 
       case Wait:
@@ -69,10 +69,19 @@ Motor::Motor()
 		  dir=Forward;
 
 		  //check distance ...
-		  
-		  
-		  
-		  
+		  distanceDriven = (odo->left() + odo->right() )/2 * 44/100;
+			distanceToDrive = driveDistance - distanceDriven;
+			middleDistance = (t1+t2)/2;		  
+			if ( middleDistance > 10 && middleDistance < 30 ) 
+		  {
+				Serial.println(middleDistance);
+				if( distanceToDrive > middleDistance )
+				{
+					Serial.println(middleDistance);
+					Stop();
+					return -1;
+				}
+			}
 		  
 		  if(done){
 

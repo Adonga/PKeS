@@ -52,9 +52,11 @@
     cValue=k;
   }
 
-  void IRC::showConverted(Display *dis)
+  void IRC::showConverted(Display *dis,bool bla)
   {
-    
-    dis->showSmallNumber(cValue,One);
+    if(bla)
+		dis->showSmallNumber(cValue,One);
+	else
+		dis->showSmallNumber(v);
   }
   
