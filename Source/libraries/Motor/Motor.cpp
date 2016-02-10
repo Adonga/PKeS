@@ -50,8 +50,10 @@ Motor::Motor()
  int Motor::Update( IRC *irc1, IRC *irc2, MyGyro *mygyro ,Control::LR *lr,Odometrie *odo)
   {
 	ChangeSpeed(lr);
+	
     int t1,t2,t3,t4,t5;
-    switch(cMode){
+    
+	switch(cMode){
 
       case Wait:
             Stop();
@@ -68,13 +70,16 @@ Motor::Motor()
 
 		  //check distance ...
 		  
-		  t5=(odo->left()+odo->right())/4;
+		  t5=(odo->left());
 		  
-		  t5*=87;
+		  t5*=44;
 		  //t5-=driveDistance;
+		  
+		  //Serial.println(t5);
 		  
 		  if(t5>(driveDistance-22))
 		  {
+			//Stop();
 			return 1;
 		  }
 		  
@@ -215,8 +220,8 @@ Motor::Motor()
   void Motor::ChangeSpeed( Control::LR *leftright )
   {
 //		m_pid.setMotorspeed(mode);
-		currentSpeedLR[0] = limit <= leftright->leftM ? limit : leftright->leftM;
-		currentSpeedLR[1] = limit <= leftright->rightM ? limit : leftright->rightM;
+		//currentSpeedLR[0] = limit <= leftright->leftM ? limit : leftright->leftM;
+		//currentSpeedLR[1] = limit <= leftright->rightM ? limit : leftright->rightM;
 
 		currentSpeedLR[0] = leftright->leftM;
 		currentSpeedLR[1] = leftright->rightM;

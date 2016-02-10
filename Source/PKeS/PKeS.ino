@@ -137,17 +137,18 @@ void setup()
     motor.init();
     odo.init();
     _delay_ms(10);
-    control.getpid().setP( 1 );
-    control.getpid().setD( 0.3 );
+    control.getpid().setP( 100 );
+    control.getpid().setI( 005 );
+    control.getpid().setD( 040 );
     control.setMotorspeed( speed150, true );
     motor.limit = speed150;
     control.setTargetDirection( 0 );
-
+/*
    Serial.println(TCCR1A);
    Serial.println(TCCR1B);
    Serial.println(TCCR4A);
    Serial.println(TCCR4B);
-  
+  */
 }
 
 

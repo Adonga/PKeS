@@ -4,21 +4,21 @@
 
 class PID {
 	public:
-	PID( float p, float d, float i );
+	PID( int p, int d, int i );
 
 		void setTarget( int target, int firstValue ); //target == richtung die man fahren will
-    void setP(float p);
-    void setD(float d);
-    void setI(float i);
+    void setP(int p);
+    void setD(int d);
+    void setI(int i);
 
     int result( int current );
 
     int target() const;
 
 	private:
-		float m_p;
-    float m_d;
-    float m_i;
+	int m_p;
+    int m_d;
+    int m_i;
 
     int m_target    = 0;
     int m_lastValue = 0;

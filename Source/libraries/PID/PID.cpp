@@ -1,6 +1,6 @@
 #include "PID.h"
 
-PID::PID( float p, float d, float i ) :
+PID::PID( int p, int d, int i ) :
     m_p( p ), m_d( d ), m_i( i )
 {
 
@@ -12,17 +12,17 @@ void PID::setTarget( int target, int firstValue )
     m_target    = target;
 }
 
-void PID::setP(float p)
+void PID::setP(int p)
 {
     m_p = p;
 }
 
-void PID::setD(float d)
+void PID::setD(int d)
 {
     m_d = d;
 }
 
-void PID::setI(float i)
+void PID::setI(int i)
 {
     m_i = i;
 }
@@ -34,9 +34,12 @@ int16_t PID::result( int current )
 //		Serial.println(diff);
 	 
   	m_integral += diff;
-    return m_i * m_integral +
-           m_d * static_cast<float>( diff - m_lastValue ) +
-           m_p * static_cast<float>( diff );
+	
+	int res=	m_i * (m_integral) +
+				m_d * ( diff - m_lastValue ) +
+				m_p * ( diff );
+	
+    return res/100;
 }
 
 int PID::target() const
