@@ -70,11 +70,28 @@ Motor::Motor()
 
 		  //check distance ...
 		  
+		  
+		  
+		  
+		  
+		  if(done){
+
+		  return 1;
+		  }
+		  /*
 		  t5=(odo->left());
 		  
 		  t5*=44;
 		  //t5-=driveDistance;
 		  
+		  if(((t1+t2)/2)<200){
+		  
+			if((driveDistance-t5)/100>((t1+t2)/2))
+			{
+					Stop();
+					return -1;
+			}
+		  }
 		  //Serial.println(t5);
 		  
 		  if(t5>(driveDistance-22))
@@ -82,7 +99,7 @@ Motor::Motor()
 			//Stop();
 			return 1;
 		  }
-		  
+		  */
 		  
 		  
           break;
@@ -163,24 +180,19 @@ Motor::Motor()
             break;
       
       case Rotate:
-			  int rotationTicks= (driveDistance* 10)/52;
-      					
-				if( rotationTicks > 0)
-				{
-					dir = Right;
-					if (odo->right() >= rotationTicks && mygyro->getUsefulNumber() >= driveDistance )
-						return 1;
-				}
-				else if ( rotationTicks < 0 )
-				{
-					if (odo->left() >= -rotationTicks && mygyro->getUsefulNumber() <= -driveDistance)
-						return 1;
-					dir = Left;
-				}else 
-				{
-					return 1;
-				}
+			if(!invert){
+			
+				dir=Right;
+		
+			}else{
+				dir=Left;		
+			}
+	
+		if(done){
+			return 1;
+		}
 /**	  
+
           t1=mygyro->getUsefulNumber();
 		  t2=mygyro->gyroChanged;
           if(!t1||((t2>-5) && (t2<5))){
