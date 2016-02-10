@@ -36,4 +36,7 @@ MyGyro::MyGyro()
     gyroChanged=0;
   }
   
-
+  void MyGyro::setValue(int value)
+  {
+	gyroChanged=value*12;//the other magic number
+  }

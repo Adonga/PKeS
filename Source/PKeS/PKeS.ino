@@ -228,8 +228,9 @@ void loop()
 
               case 'r':
               motor.ChangeMode(Rotate);
-              mygyro.setValue(currentValue);
+              //mygyro.setValue(currentValue);
 
+              motor.driveDistance = currentValue;
               break;
 
 
