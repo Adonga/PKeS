@@ -51,7 +51,7 @@ Motor::Motor()
   {
 	ChangeSpeed(lr);
 	
-    int t1,t2,t3,t4,t5;
+    int t1,t2,t3,t4,t5,t6,t7;
     
 	switch(cMode){
 
@@ -70,8 +70,25 @@ Motor::Motor()
 
 		  //check distance ...
 		  
+		  t5=(odo->left())*44/10;
+		  t6=(driveDistance*44/10)-t5;
+		  t7=(t1+t2)/2;
 		  
+		  if(t7>100&&t7<300)
+		  {
+			Serial.print(t5);
+			Serial.print(" ");
+			Serial.print(t6);
+			Serial.print(" ");
+			Serial.println(t7);
+			if(t6>t7)
+			{
+				Stop();
+				return -1;
+			}
 		  
+		  }
+			
 		  
 		  
 		  if(done){
