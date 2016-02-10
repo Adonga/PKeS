@@ -30,6 +30,9 @@ public:
 
   int driveDistance=0;//in mm
 
+  bool done=false;
+  bool invert=false;
+
   Motor();
   
 

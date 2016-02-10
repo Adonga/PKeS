@@ -105,11 +105,19 @@ int speed150 = 156;
   ISR( INT2_vect )
   {
    odo.interrupt1++;  //rechts
+   if(odo.interrupt1>=motor.driveDistance){
+    motor.done=true;
+    motor.Stop();
+   }
   }
   
   ISR ( PCINT1_vect )
   {
     odo.interrupt2++; //links
+    if(odo.interrupt2>=motor.driveDistance){
+    motor.done=true;
+    motor.Stop();
+   }
   }
 
 void setup() 
@@ -208,10 +216,13 @@ void loop()
           dis.showSmallNumber(h);
           break;
     case 4:
+    
           if(nextCommand)
           {
             ICache.GetValues(currentType,currentValue);
             odo.reset();
+            motor.done=false;
+            motor.invert=false;
             if(currentType=='f'&&currentValue==0)
             {
                t=0;
@@ -221,14 +232,20 @@ void loop()
             {
               case 'f':
               motor.ChangeMode(Drive);
-              motor.driveDistance=currentValue*100;
+              motor.driveDistance=currentValue*100/44;
 
               break;
 
 
               case 'r':
               motor.ChangeMode(Rotate);
-              mygyro.setValue(currentValue);
+              if(((currentValue*10)/36)<0){
+                motor.invert=true;
+                motor.driveDistance=-((currentValue*10)/36);
+              }else{
+                motor.driveDistance=((currentValue*10)/36);  
+              }
+              
 
               break;
 
@@ -258,9 +275,9 @@ void loop()
             Serial.print(currentType);
             Serial.print(" ");
             Serial.print(currentValue);
-            Serial.print(" cant be completed, the queue is beeing deleted.");
+            Serial.println(" cant be completed, the queue is beeing deleted.");
             ICache.Empty();
-            
+            nextCommand=true;
           }
           
           
