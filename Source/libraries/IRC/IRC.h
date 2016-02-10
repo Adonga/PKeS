@@ -21,7 +21,7 @@ class IRC
 
   void addvalue(int vr);
 
-  void showConverted(Display *dis);
+  void showConverted(Display *dis,bool bla=true);
   
 };
 #endif

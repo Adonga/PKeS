@@ -94,9 +94,12 @@ Waterscale scale;
 ADConverter adc;
 InputCache ICache;
 
-int s1[10]={272,217,179,153,138,130,125,118,111,110};
+
+//int s1[10]={272,217,179,153,138,130,125,118,111,110};
+int s1[10]={366,278,208,178,148,130,108,95,89,80};
 IRC irc1(s1);
-int s2[10]={506,400,334,284,253,226,205,185,170,158};
+//int s2[10]={506,400,334,284,253,226,205,185,170,158};
+int s2[10]={407,290,223,190,155,136,112,101,90,81};
 IRC irc2(s2);
 int speed150 = 156;
 
@@ -206,10 +209,10 @@ void loop()
           odo.reset();
           break;
     case 1:
-          irc1.showConverted(&dis);
+          irc1.showConverted(&dis,false);
           break;
     case 2:
-          irc2.showConverted(&dis);
+          irc2.showConverted(&dis,false);
           break;
     case 3:
           h=mygyro.getUsefulNumber();
@@ -397,8 +400,8 @@ void loop()
                   switch(incomingByte)
                 {
                   case 's':t=0;break;
-                  //case '1':t=1;break;
-                  //case '2':t=2;break;
+                  case '1':t=1;break;
+                  case '2':t=2;break;
                   //case '3':t=3;break;
                   case 'd':t=4;nextCommand=true;break;
                   //case '5':t=5;break;
@@ -412,8 +415,8 @@ void loop()
                   //case 'd':t=13;break;
                   //case 'e':t=14;break;
                   //case 'f':t=15;break;
-                  //case 'g':t=16;break;
-                  //case 'h':t=17;break;
+                  case 'g':t=16;break;
+                  case 'h':t=17;break;
                   case 'w':km+=1;break;
                   case 'm':km-=1;break;
                   case 'f':otherin=true;type='f';break;
