@@ -45,7 +45,6 @@ public:
 	int limit = 0;
   int Update( IRC *irc1, IRC *irc2, MyGyro *mygyro ,Control::LR *leftright, Odometrie *odo);
 
-  void bla();
 
   void Stop();
 

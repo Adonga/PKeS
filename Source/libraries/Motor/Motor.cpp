@@ -76,11 +76,11 @@ Motor::Motor()
 		  
 		  if(t5>100&&t5<300)
 		  {
-			Serial.print(distanceDriven);
-			Serial.print("distanceDriven  ");
-			Serial.print(distanceToDrive);
-			Serial.print("distanceToDrive ");
-			Serial.println(t5);
+			//Serial.print(distanceDriven);
+			//Serial.print("distanceDriven  ");
+			//Serial.print(distanceToDrive);
+			//Serial.print("distanceToDrive ");
+			//Serial.println(t5);
 			if(distanceToDrive>t5)
 			{
 				Stop();
@@ -252,13 +252,6 @@ Motor::Motor()
     return 0;
   }
 
-  void Motor::bla()
-  {
-      OCR1A  = 0;
-      OCR1B  = 0;
-      OCR4A  = 128;
-      OCR4B  = 255;
-  }
 
   void Motor::Stop()
   {
@@ -295,7 +288,7 @@ Motor::Motor()
  void Motor::ChangeMove(Direction now)
   {
     PORTH|=(1<<3);
-    _delay_us(200);
+    _delay_us(1);
     PORTH&=~(1<<3);
     dir=now;
 

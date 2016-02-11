@@ -13,8 +13,8 @@
 
 //		EICRA |= ( 1 << ISC21); //fallede Flanke ein Interrupt
 	  EICRA |= ( 1 << ISC20); //+ das waere steigende Flanke Interrupt 
-		Serial.print("EICRA ");
-		Serial.println(EICRA);
+		//Serial.print("EICRA ");
+		//Serial.println(EICRA);
 		EIFR = (1 << INTF2);
 		EIMSK |= ( 1 << INT2);
     sei();

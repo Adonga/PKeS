@@ -61,6 +61,23 @@ public:
     
   }
 
+  void ShowQueue()
+  {
+    if(!CSize){
+      Serial.println("The Queue is Empty.");
+    }
+    for(int i=0;i<CSize;i++)
+    {
+      
+      Serial.print("The following Command: ");
+      Serial.print(types[(CSPointer+i)%CacheSize]);
+      Serial.print(" ");
+      Serial.print(values[(CSPointer+i)%CacheSize]);
+      Serial.println(" is queued.");
+        
+    }
+  }
+
   void Empty(bool show=true)
   {
     if(show)
@@ -123,12 +140,25 @@ int speed150 = 156;
    }
   }
 
+
+void ShowCommands()
+{
+  Serial.println("The Following Inputs are available:");
+  Serial.println("h -> show Help");
+  Serial.println("s -> the Bot Stops all current Actions");
+  Serial.println("f (int) -> queues a forward command with specified the value");
+  Serial.println("r (int) -> queues a rotation command with specified the value");
+  Serial.println("c -> clears the Queue from all current Commands");
+  Serial.println("z -> shows all queues Commands");
+  Serial.println("d -> the Bot will start to progress the queued Commands");
+}
+
 void setup() 
 {
   // put your setup code here, to run once:
   Serial.begin(57600);
   _delay_ms(100);
-  Serial.println("0123456789");
+  
   dis.ShowCleared();
   
   Wire.begin();
@@ -138,7 +168,7 @@ void setup()
 
     MPU9150_setupCompass();
 
-  for (int i =0;i<mygyro.lange;i++)
+    for (int i =0;i<mygyro.lange;i++)
     {
       mygyro.gyroAverage += MPU9150_readSensor(MPU9150_GYRO_ZOUT_L,MPU9150_GYRO_ZOUT_H);
       _delay_ms(100);
@@ -149,7 +179,7 @@ void setup()
     odo.init();
     _delay_ms(10);
     control.getpid().setP( 100 );
-    control.getpid().setI( 005 );
+    control.getpid().setI( 000 );
     control.getpid().setD( 040 );
     control.setMotorspeed( speed150, true );
     motor.limit = speed150;
@@ -160,7 +190,14 @@ void setup()
    Serial.println(TCCR4A);
    Serial.println(TCCR4B);
   */
+  _delay_ms(10);
+  _delay_ms(10);
+  
+  Serial.println("The Bot is now ready for Input");
+  ShowCommands();
 }
+
+
 
 
 static byte km=0;
@@ -179,7 +216,7 @@ void loop()
 {
   // put your main code here, to run repeatedly:
  
-  
+
   int b=adc.convert();
   irc1.addvalue(b);
   int k=adc.convert(1);
@@ -226,6 +263,10 @@ void loop()
             odo.reset();
             motor.done=false;
             motor.invert=false;
+            b=adc.convert();
+            irc1.addvalue(b);
+            k=adc.convert(1);
+            irc2.addvalue(k);
             if(currentType=='f'&&currentValue==0)
             {
                t=0;
@@ -270,6 +311,10 @@ void loop()
             Serial.print(" ");
             Serial.println(currentValue);
             nextCommand=true;
+            b=adc.convert();
+            irc1.addvalue(b);
+            k=adc.convert(1);
+            irc2.addvalue(k);
           }
           else if(h==-1)
           {
@@ -281,6 +326,10 @@ void loop()
             Serial.println(" cant be completed, the queue is beeing deleted.");
             ICache.Empty();
             nextCommand=true;
+            b=adc.convert();
+            irc1.addvalue(b);
+            k=adc.convert(1);
+            irc2.addvalue(k);
           }
           
           
@@ -304,18 +353,23 @@ void loop()
           Serial.println(km);
           break;
     case 7:
+    /*
           motor.dir=Forward;
           motor.ChangeSpeed( &lr );
           _delay_ms(20);
+      */
+          ShowCommands();
+          t=0;
           break;
 
     case 8:
-          motor.dir=Right;
-          motor.ChangeSpeed( Middle );  
+          
+          ICache.ShowQueue();
+          t=0; 
           break;
     case 9:
-          motor.dir=Left;
-          motor.ChangeSpeed( Middle );  
+          ICache.Empty(true);
+          t=0;  
           break;
     default:
     t=0;
@@ -414,11 +468,11 @@ void loop()
                   //case 'c':t=12;break;
                   //case 'd':t=13;break;
                   //case 'e':t=14;break;
-                  //case 'f':t=15;break;
-                  case 'g':t=16;break;
-                  case 'h':t=17;break;
+                  case 'h':t=7;break;
+                  case 'c':t=9;break;
+                  case 'z':t=8;break;
                   case 'w':km+=1;break;
-                  case 'm':km-=1;break;
+                  //case 'm':km-=1;break;
                   case 'f':otherin=true;type='f';break;
                   case 'r':otherin=true;type='r';break;  
                   default: break;
